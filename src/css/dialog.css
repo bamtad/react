@@ -1,0 +1,128 @@
+.dialog{
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 1.5rem;
+width: 28rem;
+height: min-content;
+border-radius: 28px;
+list-style-type: none;
+border: 0;
+background-color:#ece6f0;
+}
+.dialog .action-btn{
+    align-self:end;
+}
+.dialog .action-btn .action{
+font-size:large ;
+align-self: end;
+width: 53px;
+height: 20px;
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 500;
+margin: 1rem;
+line-height: 20px;
+color: #6750A4;
+cursor: pointer;
+}
+.dialog .action-btn .action:hover{
+    color: #977be3;
+}
+
+.dialog .dialog-ico svg{
+    fill:#625B71;
+}
+.dialog .list-item .items{
+    list-style-type: none;
+}
+.list-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.items{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+}
+.list-item br,.items br {
+    display: block;
+    content: "";
+    height: 1px;
+    background-color: rgb(202, 201, 201);
+    border: none;
+    margin: 10px 0;
+    opacity: 0.3;
+}
+li.in-item{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 0.5rem;
+  }
+  .ico{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border:none;
+    background-color: #eaddff;
+    font-size: large;
+    margin-right: 4px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 100%;
+    padding: 8px;  
+}
+  .item-text ,.item-text:focus ,.item-text:active {
+     font-size:16px;
+     width: 200px;
+     border: none;
+     padding: 8px;
+     background-color:#ece6f0 ;
+}
+
+  .num-checkbox{
+    display: flex;
+    align-items: center;
+    font-size: large;
+    gap:0.41rem;
+    justify-content: center;
+  }
+
+  input[type="checkbox"] {
+    -webkit-appearance:none;
+    appearance:none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.01em solid currentColor;
+    border-radius: 0.15em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em #6750a4;
+    background-color: CanvasText;
+    transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+
+  }
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+  input[type="checkbox"]:focus {
+    outline: max(0.2px, 0.01em) solid currentColor;
+  }
