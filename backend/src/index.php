@@ -1,9 +1,28 @@
 <?php
 require("db/database.php");
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
+function register($username,$pass1,$email){
 
-Database::getConnection();
-$name = $_GET["name"];
-$l = json_encode(array("kool" => getallheaders()));
-echo $l;
+    $db=Database::getConnection();
+    $sql = "INSERT INTO \"user\" (username, password, email) VALUES ($1, $2, $3)";
+
+    $stm = pg_prepare($db, "my_query", $sql);
+    $result = pg_execute($db, "my_query", array("{$username}", "{$pass1}", "{$email}"));
+if (!$db) {
+    die("Connection error: " . pg_last_error($db));
+}
+if (!$result) {
+    die("Query execution error: " . pg_last_error($db));
+} else {
+    echo "Data inserted successfully.";
+}
+}
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+    $username=$_POST["username"];
+    $pass1=$_POST["pass1"];
+    $pass2=$_POST["pass2"];
+    $email=$_POST["email"];
+    register($username,$pass1,$email);
+
+
+
+}
