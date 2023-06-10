@@ -22,6 +22,7 @@ services:
     volumes:
       - medias:/medias
       - ./backend/src:/var/www/html
+      - ./backend/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - cgi
       - db
