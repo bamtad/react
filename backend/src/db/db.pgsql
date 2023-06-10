@@ -1,0 +1,93 @@
+CREATE TYPE user_type as Enum('admin', 'orgs', 'normal');
+
+CREATE TYPE doc_type as Enum('certificate', 'edu_document', 'ack');
+
+-- Address table
+CREATE TABLE
+    "address" (
+        id SERIAL PRIMARY KEY,
+        "country" varchar(255),
+        "city" varchar(255),
+        "zip" int,
+        "street" varchar(255)
+    );
+
+CREATE TABLE
+    "user" (
+        id SERIAL PRIMARY KEY,
+        "fname" varchar(255) not null,
+        "lname" varchar(255),
+        "email" varchar(512) not null UNIQUE,
+        "phone" varchar(20),
+        "user_type" user_type,
+        "address" int,
+        "profile_pic" varchar(512),
+        "bg_pic" varchar(255)
+    );
+
+CREATE TABLE
+    "document" (
+        id SERIAL PRIMARY KEY,
+        "name" varchar(255) not null,
+        "description" text,
+        "issued_by" int not null,
+        "is_revoked" BOOLEAN DEFAULT FALSE,
+        "is_expired" BOOLEAN DEFAULT FALSE,
+        "doc_type" doc_type,
+        "url" varchar(512) not null,
+        "created_at" timestamp not null,
+        "issued_at" timestamp not null,
+        "updated_at" timestamp not null
+    );
+
+CREATE TABLE
+    "notification" (
+        id SERIAL PRIMARY KEY,
+        "from" int not null,
+        "to" int not null,
+        "body" varchar(512) not null
+    );
+
+CREATE TABLE
+    "link" (
+        id SERIAL PRIMARY KEY,
+        "owner" int not null,
+        "is_open" BOOLEAN DEFAULT TRUE
+    );
+
+-- Many2Many Relationships
+CREATE TABLE
+    "doc_link" (
+        id SERIAL PRIMARY KEY,
+        "link" integer not null,
+        "document" integer not null
+    );
+
+CREATE TABLE
+    "link_permission" (
+        id SERIAL PRIMARY KEY,
+        "user" int not null,
+        "link" int not null
+    );
+
+-- Constraints
+ALTER TABLE "link_permission"
+ADD CONSTRAINT fk_link_link_permission FOREIGN KEY ("link") REFERENCES "link" (id),
+ADD CONSTRAINT fk_user_link_permission FOREIGN KEY ("user") REFERENCES "user" (id);
+
+ALTER TABLE "doc_link"
+ADD CONSTRAINT fk_doc_doc_link FOREIGN KEY ("document") REFERENCES "document" (id),
+ADD CONSTRAINT fk_link_doc_link FOREIGN KEY ("link") REFERENCES "link" (id);
+
+ALTER TABLE "link"
+ADD CONSTRAINT fk_link_owner FOREIGN KEY ("owner") REFERENCES "user" (id);
+
+ALTER TABLE "document"
+ADD CONSTRAINT fk_issued_by_document FOREIGN KEY ("issued_by") REFERENCES "user" (id);
+
+ALTER TABLE "notification"
+ADD CONSTRAINT fk_to_notification FOREIGN KEY ("to") REFERENCES "user" (id),
+ADD CONSTRAINT fk_from_notification FOREIGN KEY ("from") REFERENCES "user" (id);
+
+ALTER TABLE "user"
+ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id);
