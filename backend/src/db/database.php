@@ -81,7 +81,12 @@ class Database
             if ($index != 0) {
                 $addon = $addon . " AND";
             }
-            $addon = $addon . " \"$d\" = '$v'";
+            if (strtolower($v) == "null") {
+
+                $addon = $addon . " \"$d\" is NULL";
+            } else {
+                $addon = $addon . " \"$d\" ILIKE '$v'";
+            }
         }
         $sql = $sql . $addon;
 
@@ -94,7 +99,7 @@ class Database
         $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($result) == 0) {
-            return false;
+            return array();
         }
 
         return $result[0];
@@ -160,7 +165,12 @@ class Database
             if ($index != 0) {
                 $addon = $addon . " AND";
             }
-            $addon = $addon . " \"$d\" = '$v'";
+            if (strtolower($v) == "null") {
+
+                $addon = $addon . " \"$d\" is NULL";
+            } else {
+                $addon = $addon . " \"$d\" ILIKE '$v'";
+            }
         }
         $sql = $sql . $addon;
 
@@ -171,6 +181,10 @@ class Database
         }
 
         $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($result) == 0) {
+            return array();
+        }
 
         return $result;
     }

@@ -25,6 +25,7 @@ class Models
     }
     function delete()
     {
+
         $db = Database::delete($this->table, array("id" => $this->id));
     }
 
@@ -46,11 +47,11 @@ class User extends Models
     public $is_authenticated = false;
     public $table = "user";
     public $password;
-    function __construct($fname, $email)
-    {
-        $this->fname = $fname;
-        $this->email = $email;
-    }
+    // function __construct($fname, $email)
+    // {
+    //     $this->fname = $fname;
+    //     $this->email = $email;
+    // }
 
     static function filter()
     {

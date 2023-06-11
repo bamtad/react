@@ -1,5 +1,10 @@
 <?php
 require(dirname(__DIR__) . "/models/user.php");
+$content_type = explode(";", $_SERVER["CONTENT_TYPE"])[0];
+if ($content_type != "application/json" && $content_type != "multipart/form-data" && $_SERVER["REQUEST_METHOD"] != "GET") {
+    echo json_encode(array("detail" => "Un supported media type", "mime" => $content_type));
+    exit;
+}
 function method_not_allowed()
 {
     $method = $_SERVER["REQUEST_METHOD"];
