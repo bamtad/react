@@ -19,10 +19,11 @@ CREATE TABLE
         "lname" varchar(255),
         "email" varchar(512) not null UNIQUE,
         "phone" varchar(20),
-        "user_type" user_type,
+        "password" varchar(20) not null,
+        "user_type" user_type DEFAULT 'normal',
         "address" int,
-        "profile_pic" varchar(512),
-        "bg_pic" varchar(255)
+        "profile_pic" int,
+        "bg_pic" int
     );
 
 CREATE TABLE
@@ -53,6 +54,13 @@ CREATE TABLE
         id SERIAL PRIMARY KEY,
         "owner" int not null,
         "is_open" BOOLEAN DEFAULT TRUE
+    );
+
+CREATE TABLE
+    "file" (
+        id SERIAL PRIMARY KEY,
+        "url" VARCHAR(512) NOT NULL,
+        "document" int not null
     );
 
 -- Many2Many Relationships
@@ -90,4 +98,9 @@ ADD CONSTRAINT fk_to_notification FOREIGN KEY ("to") REFERENCES "user" (id),
 ADD CONSTRAINT fk_from_notification FOREIGN KEY ("from") REFERENCES "user" (id);
 
 ALTER TABLE "user"
-ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id);
+ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id),
+ADD CONSTRAINT fk_pp_user FOREIGN KEY ("profile_pic") References "file" (id),
+ADD CONSTRAINT fk_bg_user FOREIGN KEY ("bg_pic") References "file" (id);
+
+ALTER TABLE "file"
+ADD CONSTRAINT fk_images_document FOREIGN KEY ("document") REFERENCES "document" (id);

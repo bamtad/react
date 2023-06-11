@@ -5,10 +5,6 @@ namespace DB;
 use PDO;
 use PDOException;
 
-trait db_data
-{
-    // public static $db =Database::getConnection();
-}
 class Database
 
 {
@@ -20,12 +16,13 @@ class Database
             $port = "5432";
             $dbname = "myphpdb";
             $user = "mure_ko";
-            $password = "mydatabase123";
+            $password = "mypassword123";
             try {
-                $db = new PDO("postgress:host=$host;port=$port;dbname=$dbname;user=$user;password=$password");
+                $db = new PDO("pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password");
                 Database::$con = $db;
             } catch (PDOException $e) {
-                echo "Database Connection Error";
+                echo "Database Connection Error" . $e;
+                exit;
             }
         }
         return Database::$con;
@@ -37,37 +34,144 @@ class Database
         }
     }
     static function insert($table, $data)
+
     {
+        $db = Database::getConnection();
+        $columns = "";
+        $values = "";
+        $index = 0;
+        foreach ($data as $column => $value) {
+            if ($value == null) {
+                continue;
+            }
+            if ($index != 0) {
+                $columns = $columns . ",";
+                $values = $values . ",";
+            }
+            $index += 1;
+
+            $columns = $columns . " \"$column\"";
+            $values = $values . " '$value'";
+        }
+        $sql = "INSERT INTO \"$table\" ($columns) VALUES ($values)";
+        $stm = $db->prepare($sql);
+        try {
+            $stm = $stm->execute();
+        } catch (PDOException $e) {
+            http_response_code(400);
+            if ($e->getCode() == 23505) {
+
+                echo json_encode(array("detail" => $e->errorInfo[2]));
+                exit;
+            }
+
+            echo json_encode(array("deatil" => $e->getMessage()));
+        }
     }
-    static function get($table, $data, $column, $q)
+    static function get($table, $data)
     {
 
         $db = Database::getConnection();
 
-        $sql = "SELECT* FROM $table WHERE $column= :value";
-        $stm = $db->prepare($sql);
-        $stm->bindParam(":value", $q);
+        $sql = "SELECT* FROM \"$table\" WHERE ";
+        $addon = "";
+        $index = 0;
 
-        $rs = $stm->execute();
+        foreach ($data as $d => $v) {
+            if ($index != 0) {
+                $addon = $addon . " AND";
+            }
+            $addon = $addon . " \"$d\" = '$v'";
+        }
+        $sql = $sql . $addon;
+
+        $stm = $db->prepare($sql);
+
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($result) == 0) {
+            return false;
+        }
+
+        return $result[0];
     }
     static function update($table, $data)
     {
+        $columns = "";
+        $index = 0;
+        $id = $data["id"];
+        unset($data["id"]);
+        foreach ($data as $column => $value) {
+            if ($value == null) {
+                continue;
+            }
+            if ($index != 0) {
+                $columns = $columns . ",";
+            }
+            $index += 1;
+
+            $columns = $columns . " \"$column\"='$value'";
+        }
+        $sql = "UPDATE  \"$table\" set $columns where \"id\"= " . $id;
+        $db = Database::getConnection();
+
+        $stm = $db->prepare($sql);
+
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
     }
     static function delete($table, $data)
     {
-        // $db = Database::getConnection();
-        // $sql = "Delete from $table  where $column= :value";
-        // $stm->$db->prepare($sql);
-        // $stm->bindParam(":value", $q);
-        // $stm->execute();
+        $db = Database::getConnection();
+
+        $sql = "DELETE FROM \"$table\" WHERE ";
+        $addon = "";
+        $index = 0;
+
+        foreach ($data as $d => $v) {
+            if ($index != 0) {
+                $addon = $addon . " AND";
+            }
+            $addon = $addon . " \"$d\" = '$v'";
+        }
+        $sql = $sql . $addon;
+
+        $stm = $db->prepare($sql);
+
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
     }
     static function filter($table, $data)
     {
-        $sql = "SELECT* FROM $table WHERE";
-        foreach ($data as $k => $v) {
-            $sql += " AND $k=$v";
-        }
+
         $db = Database::getConnection();
+
+        $sql = "SELECT* FROM \"$table\" WHERE ";
+        $addon = "";
+        $index = 0;
+
+        foreach ($data as $d => $v) {
+            if ($index != 0) {
+                $addon = $addon . " AND";
+            }
+            $addon = $addon . " \"$d\" = '$v'";
+        }
+        $sql = $sql . $addon;
+
         $stm = $db->prepare($sql);
+
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
     }
 }

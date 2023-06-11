@@ -1,6 +1,6 @@
 <?php
-require("middlewares/common_middleware.php");
-require("middlewares/session_middleware.php");
+require(dirname(__DIR__) . "/middlewares/common_middleware.php");
+require(dirname(__DIR__) . "/middlewares/session_middleware.php");
 
 use DB\Database;
 

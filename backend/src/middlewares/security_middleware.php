@@ -1,9 +1,32 @@
 <?php
+require(dirname(__DIR__) . "/models/user.php");
 function method_not_allowed()
 {
     $method = $_SERVER["REQUEST_METHOD"];
     $msg = array("detail" => "/" . $method . "/ Method Not allowed");
     $msg = json_encode($msg);
+    http_response_code(405);
     echo $msg;
+    exit;
+}
+function not_found()
+{
+    http_response_code(404);
+    $msg = array("detail" => "Not Found");
+    echo json_encode($msg);
+    exit;
+}
+function is_authenticated()
+{
+    if (isset($_SESSION["userdata"]) && $_SESSION["isloggedin"]) {
+        return true;
+    }
+    return false;
+}
+function un_authorized()
+{
+    $msg = array("detail" => "You don't have enough permission");
+    http_response_code(403);
+    echo json_encode($msg);
     exit;
 }
