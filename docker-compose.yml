@@ -5,6 +5,7 @@ services:
       context: backend/cgi
     volumes:
       - ./backend/src:/var/www/html
+      - medias:/medias
   db:
     image: postgres:alpine
     env_file:

@@ -1,14 +1,10 @@
 <?php
-
-use DB\Database;
-
 session_start();
 require("middlewares/common_middleware.php");
 require("middlewares/security_middleware.php");
+require("utils/upload_handler.php");
 require("views/views.php");
 
-// Database::update("user", array("id" => 1, "fname" => "Murad", "lname" => "Hussen", "phone" => "0928808587"));
-// exit;
 function get_path()
 {
     $path = $_SERVER["REQUEST_URI"];
