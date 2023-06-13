@@ -5,6 +5,7 @@ services:
       context: backend/cgi
     volumes:
       - ./backend/src:/var/www/html
+      - medias:/medias
   db:
     image: postgres:alpine
     env_file:
@@ -18,10 +19,11 @@ services:
     build:
       context: backend
     ports:
-      - 80:80
+      - 8000:80
     volumes:
       - medias:/medias
       - ./backend/src:/var/www/html
+      - ./backend/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - cgi
       - db
