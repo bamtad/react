@@ -2,10 +2,15 @@ import React from "react";
 import {  BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginPage from "./Pages/loginPage";
 import Landingpage from "./Pages/Landingpage";
-import Dashboard from "./Pages/Dashboard";
-import Profile from "./Pages/Profile";
-import Notification from "./Pages/Notification";
-import Setting from "./Pages/Setting";
+import Dashboard from "./Pages/user/Dashboard";
+import Profile from "./Pages/user/Profile";
+import Notification from "./Pages/user/Notification";
+import Setting from "./Pages/user/Setting";
+
+import AdminDashboard from "./Pages/admin/AdminDashboard";
+import AdminProfile from "./Pages/admin/AdminProfile";
+import AdminNotification from "./Pages/admin/AdminNotification";
+import AdminSetting from "./Pages/admin/AdminSetting";
 function App() {
   return (
     <div className="">
@@ -19,6 +24,11 @@ function App() {
         <Route path="/notification" element={<Notification/>} />
         <Route path="/setting" element={<Setting/>} />
         
+        
+        <Route path="/Admindashboard" element={<AdminDashboard/>} />
+        <Route path="/Adminprofile" element={<AdminProfile/> } />
+        <Route path="/Adminnotification" element={<AdminNotification/>} />
+        <Route path="/Adminsetting" element={<AdminSetting/>} />
       </Routes>
       </Router>
     </div>
