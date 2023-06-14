@@ -47,11 +47,6 @@ class User extends Models
     public $is_authenticated = false;
     public $table = "user";
     public $password;
-    // function __construct($fname, $email)
-    // {
-    //     $this->fname = $fname;
-    //     $this->email = $email;
-    // }
 
     static function filter()
     {
@@ -70,5 +65,16 @@ class User extends Models
         $usr->password = $arr["password"];
 
         return $usr;
+    }
+}
+
+
+class Document
+{
+    static function getAll()
+    {
+        // $sql = <<< EOD
+
+        // EOD;
     }
 }

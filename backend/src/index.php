@@ -4,7 +4,6 @@ require("middlewares/common_middleware.php");
 require("middlewares/security_middleware.php");
 require("utils/upload_handler.php");
 require("views/views.php");
-
 function get_path()
 {
     $path = $_SERVER["REQUEST_URI"];

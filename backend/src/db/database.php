@@ -67,11 +67,26 @@ class Database
 
             echo json_encode(array("deatil" => $e->getMessage()));
         }
+        return $db->lastInsertId();
+    }
+    static function raw($string)
+    {
+        $db = Database::getConnection();
+        $stm = $db->prepare($string);
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
+    }
+    function getUserDocument($id)
+    {
+        $sql = "SELECT * document where owner=$id";
+        return Database::raw($sql);
     }
     static function get($table, $data)
     {
 
         $db = Database::getConnection();
+
 
         $sql = "SELECT* FROM \"$table\" WHERE ";
         $addon = "";

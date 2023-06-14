@@ -7,6 +7,7 @@ class API
     public $allowed_methods = array("GET");
     public $required_fields = array();
     public $fields = array();
+    public $fields_reference = array();
     public $table;
 
     function view()
@@ -87,7 +88,7 @@ class API
             http_response_code(404);
             $msg = array("detail" => "error updating");
         }
-        (new User("", ""))->save();
+        (new User())->save();
     }
     function delete()
     {
@@ -123,9 +124,6 @@ class UsersApi extends API
             exit;
         }
     }
-    // function get()
-    // {
-    // }
     function patch()
     {
         echo json_encode($_SERVER);
