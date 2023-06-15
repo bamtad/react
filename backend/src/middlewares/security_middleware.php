@@ -1,25 +1,22 @@
 <?php
 require(dirname(__DIR__) . "/models/user.php");
 $content_type = explode(";", $_SERVER["CONTENT_TYPE"])[0];
-if ($content_type != "application/json" && $content_type != "multipart/form-data" && $_SERVER["REQUEST_METHOD"] != "GET") {
-    echo json_encode(array("detail" => "Un supported media type", "mime" => $content_type));
-    exit;
+if ($content_type != "application/json" && $content_type != "multipart/form-data" && $_SERVER["REQUEST_METHOD"] != "GET" && $_SERVER["REQUEST_METHOD"] === "PATCH") {
+    HttpResponse(array("detail" => "Un supported media type", "mime" => $content_type), 400);
 }
+
 function method_not_allowed()
 {
+    header('Content-Type: application/json; charset=utf-8');
     $method = $_SERVER["REQUEST_METHOD"];
     $msg = array("detail" => "/" . $method . "/ Method Not allowed");
-    $msg = json_encode($msg);
-    http_response_code(405);
-    echo $msg;
-    exit;
+    HttpResponse($msg, 405);
 }
 function not_found()
 {
-    http_response_code(404);
+    header('Content-Type: application/json; charset=utf-8');
     $msg = array("detail" => "Not Found");
-    echo json_encode($msg);
-    exit;
+    HttpResponse($msg, 404);
 }
 function is_authenticated()
 {
@@ -30,8 +27,7 @@ function is_authenticated()
 }
 function un_authorized()
 {
+    header('Content-Type: application/json; charset=utf-8');
     $msg = array("detail" => "You don't have enough permission");
-    http_response_code(403);
-    echo json_encode($msg);
-    exit;
+    HttpResponse($msg, 403);
 }

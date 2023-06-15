@@ -35,7 +35,7 @@ CREATE TABLE
         id SERIAL PRIMARY KEY,
         "name" varchar(255) not null,
         "description" text,
-        "owner" int not null,
+        "owner" int,
         "issued_by" int not null,
         "is_revoked" BOOLEAN DEFAULT FALSE,
         "is_expired" BOOLEAN DEFAULT FALSE,
@@ -58,6 +58,8 @@ CREATE TABLE
     "link" (
         id SERIAL PRIMARY KEY,
         "owner" int not null,
+        "qr_code" int,
+        "url" varchar(512) NOT NULL,
         "is_open" BOOLEAN DEFAULT TRUE
     );
 
@@ -93,7 +95,8 @@ ADD CONSTRAINT fk_doc_doc_link FOREIGN KEY ("document") REFERENCES "document" (i
 ADD CONSTRAINT fk_link_doc_link FOREIGN KEY ("link") REFERENCES "link" (id);
 
 ALTER TABLE "link"
-ADD CONSTRAINT fk_link_owner FOREIGN KEY ("owner") REFERENCES "user" (id);
+ADD CONSTRAINT fk_link_owner FOREIGN KEY ("owner") REFERENCES "user" (id)
+ADD CONSTRAINT fk_qr_code_link FOREIGN KEY ("qr_code") REFERENCES "file" (id);
 
 ALTER TABLE "document"
 ADD CONSTRAINT fk_issued_by_document FOREIGN KEY ("issued_by") REFERENCES "user" (id),
