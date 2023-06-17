@@ -1,4 +1,5 @@
 <?php
+
 function success_ok()
 {
     http_response_code(200);
@@ -51,4 +52,25 @@ function getCurrentUser()
         return $_SESSION["user"];
     }
     return false;
+}
+
+function pdf_image($path)
+{
+    $pdf = new Imagick($path);
+
+    $pdf->setResolution(300, 300);
+
+    // // Loop through each page of the PDF and convert it to an image
+    foreach ($pdf as $page) {
+        // Convert the PDF page to an image
+        $image = clone $page;
+        $image->setImageFormat('png');
+
+        // Save the image file
+        $filename = 'page_' . $page->getIndex() . '.png';
+        $image->writeImage('/medias/' . $filename);
+    }
+
+    // Destroy the Imagick object
+    $pdf->destroy();
 }

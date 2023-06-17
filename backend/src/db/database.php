@@ -58,14 +58,12 @@ class Database
         try {
             $stm = $stm->execute();
         } catch (PDOException $e) {
-            http_response_code(400);
             if ($e->getCode() == 23505) {
 
-                echo json_encode(array("detail" => $e->errorInfo[2]));
-                exit;
+                HttpResponse(array("detail" => $e->errorInfo[2]), 400);
             }
 
-            echo json_encode(array("detail" => $e->getMessage()));
+            HttpResponse(array("detail" => $e->getMessage()), 400);
         }
         return $db->lastInsertId();
     }
@@ -73,8 +71,9 @@ class Database
     {
         $db = Database::getConnection();
         $stm = $db->prepare($string);
+        // HttpResponse(array("detail" => $string));
         if (!$stm->execute()) {
-            die("Error: " . $stm->errorInfo()[2]);
+            HttpResponse(array("Error: " . $stm->errorInfo()[2]), 400);
         }
         return ($stm->fetchAll(PDO::FETCH_ASSOC));
     }
