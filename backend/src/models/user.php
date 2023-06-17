@@ -1,74 +1,120 @@
 <?php
 
+namespace Models;
+
 use DB\Database;
 
 require(dirname(__DIR__) . "/db/database.php");
 class Models
 {
-    public $fields = array();
     public $table;
     private $id;
     public $data;
-    function get($query)
+    public $sql_f;
+    public $sql_i;
+    public $sql_u = "UPDATE \"user\" set   \"profile_pic\" = 3
+    where
+        \"id\" <= 100";
+    public $sql_d;
+    function get($field, $value = 0, $no_join = false)
     {
-        $db = Database::get($this->table, $query);
-        if (!$db) {
-            not_found();
+        if ($no_join) {
+            return Database::fetch("SELECT* From \"$this->table\" WHERE \"$field\"='$value'");
         }
-        $this->data = $db;
-        $this->id = $db["id"];
-        return $db;
+        if ($field == "all") {
+            $fetched = Database::fetch($this->sql_f);
+        } else {
+            $fetched = Database::fetch($this->sql_f . "WHERE \"$this->table\".\"$field\"='$value'");
+        }
+
+        return $fetched;
     }
     function save()
     {
         $db = Database::insert($this->table, $this->data);
     }
-    function delete()
+    function delete($id)
     {
+        $obj = $this->get("id", $id, true);
 
-        $db = Database::delete($this->table, array("id" => $this->id));
+        if (!$obj || count($obj) == 0) {
+            not_found();
+        }
+
+        $db = Database::delete($this->table, array("id" => $id));
+        return true;
     }
 
-    function update()
+    function update($id)
     {
+        $_POST = json_decode(file_get_contents("php://input"), true);
+        $ll = $this->get("id", $id, true)[0];
+        if (!$ll || count($ll) == 0) {
+            not_found();
+        }
+        foreach ($_POST as $key => $value) {
+            $ll[$key] = $value;
+        }
+        $ll["id"] = $id;
+        Database::update($this->table, $ll);
+
+        return $ll;
     }
 }
 class User extends Models
 {
-    private $id;
-    private $fname;
-    private $lname;
-    private $phone;
-    private $email;
-    private $profile_pic;
-    private $bg_pic;
-    private $address;
-    private $userType;
+    public $id;
+    public $fname;
+    public $lname;
+    public $phone;
+    public $email;
+    public $profile_pic;
+    public $bg_pic;
+    public $address;
+    public $userType;
     public $is_authenticated = false;
     public $table = "user";
     public $password;
-    // function __construct($fname, $email)
-    // {
-    //     $this->fname = $fname;
-    //     $this->email = $email;
-    // }
+    public $sql_f = "SELECT \"user\".\"id\",\"user\".\"fname\",\"user\".\"lname\",\"user\".\"email\",\"user\".\"phone\",\"user\".\"is_verified\",\"user\".\"user_type\",\"user\".\"last_login\",\"user\".\"updated_at\",\"user\".\"created_at\",\"file\".\"url\" as \"profile_pic\",\"file2\".\"url\" as \"bg_pic\" From \"user\" LEFT JOIN \"file\" on \"file\".\"id\" = \"user\".\"profile_pic\" LEFT JOIN \"file\" as \"file2\" on \"file2\".\"id\" = \"user\".\"bg_pic\" ";
+}
 
-    static function filter()
+
+class Document extends Models
+{
+    public $table = "document";
+    public $sql_f = "SELECT
+    \"document\".\"id\" as \"id\",
+    \"document\".\"name\",
+    \"document\".\"owner\",
+    \"document\".\"description\",
+    \"document\".\"is_revoked\",
+    \"document\".\"updated_at\",
+    \"document\".\"doc_type\",
+    \"document\".\"created_at\",
+    \"document\".\"issued_at\",
+    \"document\".\"issued_by\",
+    \"file\".\"url\" as \"url\"
+FROM
+    \"document\"
+    JOIN \"file\" on \"file\".\"id\" = \"document\".\"url\"";
+}
+class Link extends Models
+{
+    public $table = "link";
+    public $sql_f = "SELECT* FROM \"link\" ";
+
+
+    private function gen_url($length = 10)
     {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
     }
-
-    static function getObject($arr)
-
+    function extras()
     {
-        $usr = new User($arr["fname"], $arr["email"]);
-        $usr->id = $arr["id"];
-        $usr->lname = $arr["lname"];
-        $usr->phone = $arr["phone"];
-        $usr->profile_pic = $arr["profile_pic"];
-        $usr->bg_pic = $arr["bg_pic"];
-        $usr->data = $arr;
-        $usr->password = $arr["password"];
-
-        return $usr;
     }
 }
