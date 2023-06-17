@@ -1,7 +1,7 @@
 <?php
 
 use DB\Database;
-use Imagick;
+use Imagick\Imagick;
 
 class UploadHandler
 {

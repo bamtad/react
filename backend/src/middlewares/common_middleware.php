@@ -1,5 +1,7 @@
 <?php
 
+use Imagick\Imagick;
+
 function success_ok()
 {
     http_response_code(200);

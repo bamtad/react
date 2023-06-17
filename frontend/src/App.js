@@ -38,10 +38,11 @@ function App() {
   return (
     <div className="">
       <Router>
-        <Routes>
-          <Route path="/" element={<Landingpage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
+      <Routes>
+        <Route path="/" element={<Landingpage/>} />
+        <Route path="/comp" element={<Landingpage/>} />
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/dashboard" element={<Dashboard/>} />
 
           <Route
             path="/dashboard"
