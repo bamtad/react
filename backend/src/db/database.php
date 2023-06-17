@@ -65,13 +65,29 @@ class Database
                 exit;
             }
 
-            echo json_encode(array("deatil" => $e->getMessage()));
+            echo json_encode(array("detail" => $e->getMessage()));
         }
+        return $db->lastInsertId();
     }
-    static function get($table, $data)
+    static function fetch($string)
+    {
+        $db = Database::getConnection();
+        $stm = $db->prepare($string);
+        if (!$stm->execute()) {
+            die("Error: " . $stm->errorInfo()[2]);
+        }
+        return ($stm->fetchAll(PDO::FETCH_ASSOC));
+    }
+    function getUserDocument($id)
+    {
+        $sql = "SELECT * document where owner=$id";
+        return Database::fetch($sql);
+    }
+    static function get($table, $data, $no_join = false)
     {
 
         $db = Database::getConnection();
+
 
         $sql = "SELECT* FROM \"$table\" WHERE ";
         $addon = "";
@@ -123,6 +139,7 @@ class Database
         }
         $sql = "UPDATE  \"$table\" set $columns where \"id\"= " . $id;
         $db = Database::getConnection();
+
 
         $stm = $db->prepare($sql);
 

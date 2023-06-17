@@ -1,6 +1,9 @@
 <?php
 
-use DB\Database;
+use Db\Database;
+use Models\User;
+use Models\Document;
+use Models\Link;
 
 class API
 {
@@ -8,6 +11,12 @@ class API
     public $required_fields = array();
     public $fields = array();
     public $table;
+    public $path_field = "id";
+    static public $model;
+    function getModel()
+    {
+        return new User();
+    }
 
     function view()
     {
@@ -19,6 +28,9 @@ class API
         $this->validateColumn(($_FILES));
         switch ($method) {
             case "POST":
+                if (count(get_path()) != 1) {
+                    method_not_allowed();
+                }
                 $req = array();
                 foreach ($this->required_fields as $p) {
                     if (!in_array($p, array_keys($_POST))) {
@@ -27,8 +39,7 @@ class API
                 }
                 if (count($req) != 0) {
                     $msg = array(...$req);
-                    echo json_encode($msg);
-                    exit;
+                    HttpResponse($msg);
                 }
                 $this->post();
                 break;
@@ -65,7 +76,7 @@ class API
 
         if (count($_FILES) != 0) {
             foreach ($_FILES as $f => $k) {
-                array_push($new_f, array($f => UploadHandler::uploader($f, array("png", "jpeg", "jpg", "gif"))));
+                array_push($new_f, array($f => UploadHandler::uploader($f, array("png", "jpeg", "jpg", "gif", "pdf"))));
             }
         }
         $data = array_merge($_POST, ...$new_f);
@@ -74,23 +85,42 @@ class API
     }
     function get()
     {
-        $data = Database::filter($this->table, array("profile_pic" => "null"));
-        echo json_encode($data);
-        exit;
+        $this->extras();
+        $path = get_path();
+        if (count($path) != 1) {
+            $bd = ($this->getModel()->get($this->path_field, $path[1]));
+            if (count($bd) == 0) {
+                HttpResponse(array("detail" => "not found"), 404);
+            }
+            HttpResponse($bd[0], 200);
+        }
+        HttpResponse(($this->getModel()->get("all")), 200);
     }
+
     function patch()
     {
-        try {
-            $sub = get_path()[1];
-            $usr = User::getObject((new User())->get(array("id" => $sub)));
-        } catch (Exception $e) {
-            http_response_code(404);
-            $msg = array("detail" => "error updating");
+        $this->extras();
+        $path = get_path();
+        if (count($path) != 1) {
+            $up = ($this->getModel())->update($path[1]);
+            HttpResponse($up, 200);
+        } else {
+            method_not_allowed();
         }
-        (new User("", ""))->save();
+        not_found();
     }
     function delete()
     {
+        $this->extras();
+        $path = get_path();
+        if (count($path) != 1) {
+            if (($this->getModel())->delete($path[1])) {
+                HttpResponse(array("detail" => "Deleted Succesfully"), 200);
+            };
+        } else {
+            method_not_allowed();
+        }
+        not_found();
     }
 }
 class APIView extends API
@@ -98,10 +128,15 @@ class APIView extends API
 }
 class UsersApi extends API
 {
-    public $allowed_methods = array("POST", "GET", "PATCH");
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array("fname", "email", "password", "password2");
     public $fields = array("fname", "email", "password", "password2", "profile_pic");
     public $table = "user";
+
+    function getModel()
+    {
+        return new User();
+    }
 
 
     function extras()
@@ -109,30 +144,17 @@ class UsersApi extends API
         $pass1 = $_POST["password"];
         $pass2 = $_POST["password2"];
         unset($_POST["password2"]);
+        $_POST["created_at"] = date('Y-m-d H:i:s', time());
+        $_POST["updated_at"] = date('Y-m-d H:i:s', time());
 
         if (strlen($pass1) < 6) {
             $msg = array("detail" => "Password is too short");
-            http_response_code(400);
-            echo json_encode($msg);
-            exit;
+            HttpResponse($msg, 400);
         }
         if ($pass1 != $pass2) {
             $msg = array("detail" => "password fields must match");
-            http_response_code(400);
-            echo json_encode($msg);
-            exit;
+            HttpResponse($msg, 400);
         }
-    }
-    // function get()
-    // {
-    // }
-    function patch()
-    {
-        echo json_encode($_SERVER);
-        exit;
-    }
-    function delete()
-    {
     }
 }
 class LoginApi extends API
@@ -143,58 +165,43 @@ class LoginApi extends API
     {
         $email = $_POST["email"];
         $password = $_POST["password"];
-        $usr = new User("", $email);
+        $usr = (new User())->get("email", $email);
 
-        $usr->password = $password;
-        $json = $usr->get(array("email" => $email));
-
-
-        $usr2 = User::getObject($json);
-
-        if ($usr->password != $usr2->password) {
-            http_response_code(404);
-            $msg = array("detail" => "User with provided credentials is not found");
-            echo json_encode($msg);
-            exit;
+        if ($usr["password"] === $password) {
+            $_SESSION["user"] = $usr;
+            HttpResponse(array("detail" => "Login succesfull"));
         }
-        $_SESSION["isloggedin"] = true;
-        $_SESSION["userdata"] = $usr2->data;
+        HttpResponse(array("detail" => "Invalid Login Credentials"), 404);
     }
 }
 class DocumentsApi extends API
 {
-    public $allowed_methods = array("GET");
-
-    function post()
+    public $allowed_methods = array("GET", "DELETE", "POST", "PATCH");
+    public $required_fields = array("name",);
+    public $fields = array("name", "owner", "issued_by", "password2", "profile_pic");
+    public $table = "document";
+    function getModel()
     {
+        return new Document();
     }
-    function get()
+    function extras()
     {
-        $msg = array("msg" => "Heloo");
-        echo json_encode($msg);
-    }
-    function patch()
-    {
-    }
-    function delete()
-    {
+        $_POST["issued_by"] = getCurrentUser()["id"];
+        $_POST["created_at"] = date("Y-m-d H:i:s", time());
+        $_POST["updated_at"] = date("Y-m-d H:i:s", time());
     }
 }
 class LinksApi extends API
 {
-    public $allowed_methods = array("POST");
-
-
-    function post()
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array();
+    public $table = "link";
+    public $fields = array();
+    function getModel()
     {
+        return new Link();
     }
-    function get()
-    {
-    }
-    function patch()
-    {
-    }
-    function delete()
+    function extras()
     {
     }
 }

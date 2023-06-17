@@ -1,4 +1,7 @@
 <?php
+
+use DB\Database;
+
 class UploadHandler
 {
 
@@ -28,6 +31,8 @@ class UploadHandler
             echo "Some kind of error";
             exit;
         }
-        return $target_file;
+        $id = Database::insert("file", array("url" => $target_file));
+        echo $id;
+        return $id;
     }
 }
