@@ -2,7 +2,7 @@
 require(dirname(__DIR__) . "/models/user.php");
 $content_type = explode(";", $_SERVER["CONTENT_TYPE"])[0];
 if ($content_type != "application/json" && $content_type != "multipart/form-data" && $_SERVER["REQUEST_METHOD"] != "GET" && $_SERVER["REQUEST_METHOD"] === "PATCH") {
-    HttpResponse(array("detail" => "Un supported media type", "mime" => $content_type), 400);
+    HttpResponse(array("detail" => "Un supported media type", "mime" => $content_type), 415);
 }
 
 function method_not_allowed()

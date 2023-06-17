@@ -24,6 +24,12 @@ switch (array_shift($path)) {
     case "login":
         (new LoginApi())->view();
         break;
+    case "logout":
+        (new LogoutApi())->view();
+        break;
+    case "files":
+        (new FileApi())->view();
+        break;
     case "documents":
         (new DocumentsApi())->view();
         break;
