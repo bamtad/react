@@ -3,7 +3,7 @@ import React from 'react'
 function Landingpage() {
   return (
     <div>
-        gg
+      gg
     </div>
   )
 }

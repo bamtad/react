@@ -36,28 +36,28 @@ function LoginPage() {
                 placeholder="Email Address"
               />
             </div>
-          <div className="mt-4 flex">
-          <div className="relative w-full">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center ">
-            <RiLockPasswordLine className="text-gray-400" />
-          </span>
-          <input
-            className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
-            type={passwordVisible ? 'text' : 'password'}
-            placeholder="Password"
-          />
-        </div>
-            <button
-              className="-ml-8 mt-5 transform -translate-y-1/2 focus:outline-none"
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? (
-                <AiOutlineEyeInvisible className="text-gray-500 w-5 h-5" />
-              ) : (
-                <AiOutlineEye className="text-gray-500 w-5 h-5" />
-              )}
-            </button>
-          </div>
+            <div className="mt-4 flex">
+              <div className="relative w-full">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center ">
+                  <RiLockPasswordLine className="text-gray-400" />
+                </span>
+                <input
+                  className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
+                  type={passwordVisible ? 'text' : 'password'}
+                  placeholder="Password"
+                />
+              </div>
+              <button
+                className="-ml-8 mt-5 transform -translate-y-1/2 focus:outline-none"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <AiOutlineEyeInvisible className="text-gray-500 w-5 h-5" />
+                ) : (
+                  <AiOutlineEye className="text-gray-500 w-5 h-5" />
+                )}
+              </button>
+            </div>
           </div>
           <div className="mt-4 flex justify-between font-semibold text-sm">
             <div className="text-center md:text-left">

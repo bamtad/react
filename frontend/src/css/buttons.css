@@ -1,11 +1,11 @@
-body{
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100vh;
 }
 
-.btn{
+.btn {
     width: 96px;
     height: 28px;
     border: none;
@@ -14,39 +14,45 @@ body{
     color: white;
     margin: 10px;
     transition: 0.5s;
+    font-size: 1rem;
+    display: inline-block;
 }
-.btn.outlined{
+
+.btn.outlined {
     border: solid;
     background: white;
-    border-radius: 5px solid  #6750A4;
+    border-radius: 5px solid #6750A4;
     color: #6750A4;
     font-weight: bold;
 }
 
-.btn.elevated{
+.btn.elevated {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     background: white;
     color: #6750A4;
-    
+
 }
-.btn.flat{
+
+.btn.flat {
     background: white;
     color: #6750A4;
     font-weight: bold;
 }
-.btn.flat:hover{
+
+.btn.flat:hover {
     border: solid;
     border-radius: 2px #6750A4;
     cursor: pointer;
     background: rgba(74, 31, 145, 0.2);
     box-shadow: none;
 }
-.btn:hover{
+
+.btn:hover {
     box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
-.btn.lg{
+.btn.lg {
     height: 36px;
     width: 120px;
     font-size: 18px;
