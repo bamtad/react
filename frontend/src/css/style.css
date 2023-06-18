@@ -1,0 +1,38 @@
+* {
+    padding: 0;
+    margin: 0;
+
+}
+
+body {
+    background: #F3ECFF;
+    /* justify-content: start; */
+    /* align-items: baseline; */
+
+}
+
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+
+/* input[type=checkbox],
+input[type=radio] {
+    vertical-align: middle;
+    position: relative;
+    bottom: 1px;
+}
+
+input[type=radio] {
+    bottom: 2px;
+} */

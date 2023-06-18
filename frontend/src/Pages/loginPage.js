@@ -89,10 +89,8 @@ function LoginPage() {
                 </span>
                 <input
                   className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
-                  type={passwordVisible ? "text" : "password"}
+                  type={passwordVisible ? 'text' : 'password'}
                   placeholder="Password"
-                  value={password}
-                  onChange={handlePasswordChange}
                 />
               </div>
               <button
