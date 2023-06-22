@@ -82,13 +82,13 @@ class Database
         $sql = "SELECT * document where owner=$id";
         return Database::fetch($sql);
     }
-    static function get($table, $data, $no_join = false)
+    static function get($table, $data, $no_join = false, string $filter = "")
     {
 
         $db = Database::getConnection();
 
 
-        $sql = "SELECT* FROM \"$table\" WHERE ";
+        $sql = "SELECT * FROM \"$table\" WHERE ";
         $addon = "";
         $index = 0;
 
@@ -100,11 +100,11 @@ class Database
 
                 $addon = $addon . " \"$d\" is NULL";
             } else {
-                $addon = $addon . " \"$d\" ILIKE '$v'";
+                $addon = $addon . " \"$d\" = '$v'";
             }
         }
-        $sql = $sql . $addon;
-
+        $sql = $sql . $addon . " " . $filter;
+        // HttpResponse(array("detail" => $sql));
         $stm = $db->prepare($sql);
 
         if (!$stm->execute()) {
@@ -185,7 +185,7 @@ class Database
 
                 $addon = $addon . " \"$d\" is NULL";
             } else {
-                $addon = $addon . " \"$d\" ILIKE '$v'";
+                $addon = $addon . " \"$d\" = '$v'";
             }
         }
         $sql = $sql . $addon;
