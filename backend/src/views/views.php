@@ -4,7 +4,13 @@ use Db\Database;
 use Models\User;
 use Models\Document;
 use Models\Link;
+use Models\Spot;
 use Models\File;
+use Models\Comment;
+use Models\Images;
+use Models\Rate;
+use Models\SpotType;
+use Models\City;
 
 class API
 {
@@ -43,7 +49,7 @@ class API
                     $msg = array(...$req);
                     HttpResponse($msg);
                 }
-                $this->post();
+                HttpResponse($this->post(), 201);
                 break;
             case "PATCH":
                 $this->patch();
@@ -71,12 +77,8 @@ class API
             }
         }
     }
-    function extras()
-    {
-    }
     function post()
     {
-        $this->extras();
         $new_f = array();
 
         if (count($_FILES) != 0) {
@@ -89,12 +91,14 @@ class API
         $id = Database::insert($this->table, $data);
         $data["id"] = $id;
 
-        HttpResponse($data, 201);
+        return $data;
+
+        // HttpResponse($data, 201);
     }
     function get()
     {
-        $this->extras();
         $path = get_path();
+
         if (count($path) != 1) {
             $bd = ($this->getModel()->get($this->path_field, $path[1]));
             if (count($bd) == 0) {
@@ -102,12 +106,28 @@ class API
             }
             HttpResponse($bd[0], 200);
         }
+        if (count($_SERVER["argv"]) != 0) {
+            $params = explode("&", $_SERVER["argv"][0]);
+            $item = array();
+            foreach ($params as $par) {
+                $q = explode("=", $par);
+                if (count($q) < 2) {
+                    continue;
+                }
+                $item[$q[0]] = $q[1];
+            }
+            $this->validateColumn($item);
+            if (count($item) != 0) {
+                $bd = ($this->getModel()->get($item));
+                HttpResponse($bd);
+            }
+        }
+
         HttpResponse(($this->getModel()->get("all")), 200);
     }
 
     function patch()
     {
-        $this->extras();
         $path = get_path();
         if (count($path) != 1) {
             $up = ($this->getModel())->update($path[1]);
@@ -119,7 +139,6 @@ class API
     }
     function delete()
     {
-        $this->extras();
         $path = get_path();
         if (count($path) != 1) {
             if (($this->getModel())->delete($path[1])) {
@@ -145,25 +164,24 @@ class UsersApi extends API
     }
 
 
-    function extras()
+    function post()
     {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-            $pass1 = $_POST["password"];
-            $pass2 = $_POST["password2"];
-            unset($_POST["password2"]);
-            $_POST["created_at"] = date('Y-m-d H:i:s', time());
-            $_POST["updated_at"] = date('Y-m-d H:i:s', time());
+        $pass1 = $_POST["password"];
+        $pass2 = $_POST["password2"];
+        unset($_POST["password2"]);
+        $_POST["created_at"] = date('Y-m-d H:i:s', time());
+        $_POST["updated_at"] = date('Y-m-d H:i:s', time());
 
-            if (strlen($pass1) < 6) {
-                $msg = array("detail" => "Password is too short");
-                HttpResponse($msg, 400);
-            }
-            if ($pass1 != $pass2) {
-                $msg = array("detail" => "password fields must match");
-                HttpResponse($msg, 400);
-            }
+        if (strlen($pass1) < 6) {
+            $msg = array("detail" => "Password is too short");
+            HttpResponse($msg, 400);
         }
+        if ($pass1 != $pass2) {
+            $msg = array("detail" => "password fields must match");
+            HttpResponse($msg, 400);
+        }
+        parent::post();
     }
 }
 class LoginApi extends API
@@ -187,7 +205,7 @@ class LoginApi extends API
             $_SESSION["logged_in"] = true;
             $_POST["last_login"] =  date("Y-m-d H:i:s", time());
             (new User())->update($usr["id"]);
-            HttpResponse(array("detail" => "Login succesfull"));
+            return array("detail" => "Login succesfull");
         }
         HttpResponse(array("detail" => "Invalid Login Credentials"), 404);
     }
@@ -240,11 +258,12 @@ class DocumentsApi extends API
     {
         return new Document();
     }
-    function extras()
+    function post()
     {
         $_POST["issued_by"] = getCurrentUser()["id"];
         $_POST["created_at"] = date("Y-m-d H:i:s", time());
         $_POST["updated_at"] = date("Y-m-d H:i:s", time());
+        return parent::post();
     }
     function getPermission()
     {
@@ -273,7 +292,79 @@ class LinksApi extends API
     {
         return new Link();
     }
-    function extras()
+}
+
+class SpotApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("lat", "long", "name", "description", "spot_type");
+    public $fields = array("lat", "long", "city", "name", "description", "spot_type");
+    public $table = "spot";
+    function getModel()
     {
+        return new Spot();
+    }
+    function post()
+    {
+        $type = $_POST["spot_type"];
+        unset($_POST["spot_type"]);
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+            $location = Database::insert("location", array("lat" => $_POST["lat"], "long" => $_POST["long"], "city" => isset($_POST["city"]) ? $_POST["city"] : null));
+            unset($_POST["lat"]);
+            unset($_POST["long"]);
+            $_POST["location"] = $location;
+        }
+        $data = parent::post();
+        Database::insert("spot_type_spot", array("spot" => $data["id"], "type" => $type));
+        $data["spot_type"] = $type;
+        return $data;
+    }
+}
+
+class SpotTypeApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("name");
+    public $fields = array("name");
+    public $table = "spot_type";
+    function getModel()
+    {
+        return new SpotType();
+    }
+}
+class CityApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("name");
+    public $fields = array("name");
+    public $table = "city";
+    function getModel()
+    {
+        return new City();
+    }
+}
+class CommentApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("spot", "body");
+    public $fields = array("spot", "body",);
+    public $table = "comment";
+
+    function getModel()
+    {
+        return new Comment();
+    }
+}
+class RateApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("spot", "rate_num");
+    public $fields = array("spot", "rate_num", "id");
+    public $table = "rate";
+
+    function getModel()
+    {
+        return new Rate();
     }
 }

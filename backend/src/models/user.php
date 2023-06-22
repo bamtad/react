@@ -17,10 +17,13 @@ class Models
         \"id\" <= 100";
     public $filter_field = "u";
     public $sql_d;
-    function get($field, $value = 0, $no_join = false)
+    function get(array | string $field, $value = 0, bool $no_join = false)
     {
         $addon = $this->filters();
-        // HttpResponse(array("detail" => "SELECT* From \"$this->table\" WHERE \"$field\"='$value'" . " WHERE " . $addon));
+
+        if (gettype($field) == "array") {
+            return  Database::filter($this->table, $field);
+        }
 
         if ($field == "all" && !$no_join) {
             if ("" != trim($addon)) {
@@ -140,4 +143,35 @@ class Link extends Models
     function extras()
     {
     }
+}
+
+class Spot extends Models
+{
+    public $table = "spot";
+    public $sql_f = "SELECT * FROM \"spot\"";
+}
+class SpotType extends Models
+{
+    public $table = "spot_type";
+    public $sql_f = "SELECT * FROM \"spot_type\"";
+}
+class Comment extends Models
+{
+    public $table = "comment";
+    public $sql_f = "SELECT * FROM \"comment\"";
+}
+class Rate extends Models
+{
+    public $table = "rate";
+    public $sql_f = "SELECT * FROM \"rate\"";
+}
+class Images extends Models
+{
+    public $table = "image";
+    public $sql_f = "SELECT * FROM \"image\"";
+}
+class City extends Models
+{
+    public $table = "city";
+    public $sql_f = "SELECT * FROM \"city\"";
 }

@@ -10,7 +10,7 @@ function get_path()
     $params = explode("/", $path);
     $n_path = array();
     foreach ($params as $p) {
-        if (trim($p) != "") {
+        if (trim($p) != "" && !preg_match("/^\?.*/", $p)) {
             array_push($n_path, $p);
         }
     }
@@ -37,6 +37,18 @@ switch (array_shift($path)) {
         (new LinksApi)->view();
         break;
     case "address":
+        break;
+    case "spot":
+        (new SpotApi)->view();
+        break;
+    case "spot-type":
+        (new SpotTypeApi)->view();
+        break;
+    case "city":
+        (new CityApi)->view();
+        break;
+    case "rate":
+        (new RateApi)->view();
         break;
     case "":
         not_found();
