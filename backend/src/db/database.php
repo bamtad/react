@@ -143,7 +143,7 @@ class Database
         $stm = $db->prepare($sql);
 
         if (!$stm->execute()) {
-            die("Error: " . $stm->errorInfo()[2]);
+            HttpResponse(array("detail" => $stm->errorInfo()[2]), 500);
         }
     }
     static function delete($table, $data)

@@ -16,7 +16,7 @@ CREATE TABLE "image" (
     "url" VARCHAR(255) NOT NULL,
     "spot" int,
     "city" int,
-    "placeholder" VARCHAR(255) NOT NULL
+    "placeholder" VARCHAR(255)
 );
 CREATE TABLE "spot" (
     "id" SERIAL PRIMARY KEY,
@@ -63,10 +63,19 @@ INSERT INTO "location" ("lat", "long", "city")
 Values()
 INSERT INTO "spot"("name", "");
 --@block
-EXPLAIN
+-- EXPLAIN
 SELECT *
 from "user";
 --@block  drop everything
 EXPLAIN
 INSERT into "user"("fname")
-Values('hello')
+Values('hello');
+--@block
+SELECT *
+From "file";
+--@block
+ALTER TABLE "image"
+ALTER column "placeholder" drop NOT NULL;
+--@block
+SELECT *
+FROM "image";
