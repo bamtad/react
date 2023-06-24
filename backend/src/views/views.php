@@ -67,6 +67,19 @@ class API
     }
     function getPermission()
     {
+        if (!getCurrentUser()) {
+            HttpResponse(array("detail" => "needs authentication"), 401);
+        }
+        $path = get_path();
+        if (count($path) != 1) {
+            $bd = ($this->getModel()->get($this->path_field, $path[1]));
+            if (count($bd) == 0) {
+                HttpResponse(array("detail" => "not found"), 404);
+            }
+            if ($bd["issued_by"] != getCurrentUser()["id"]) {
+                HttpResponse(array("detail" => "Not Allowed"), 403);
+            }
+        }
     }
     function validateColumn(&$incoming)
     {
@@ -92,8 +105,6 @@ class API
         $data["id"] = $id;
 
         return $data;
-
-        // HttpResponse($data, 201);
     }
     function get()
     {
@@ -183,6 +194,11 @@ class UsersApi extends API
         }
         parent::post();
     }
+    function get()
+    {
+        $this->getPermission();
+        parent::get();
+    }
 }
 class LoginApi extends API
 {
@@ -205,9 +221,12 @@ class LoginApi extends API
             $_SESSION["logged_in"] = true;
             $_POST["last_login"] =  date("Y-m-d H:i:s", time());
             (new User())->update($usr["id"]);
-            return array("detail" => "Login succesfull");
+            return array("detail" => "Login Succesfull");
         }
         HttpResponse(array("detail" => "Invalid Login Credentials"), 404);
+    }
+    function getPermission()
+    {
     }
 }
 class LogoutApi extends API
@@ -265,22 +284,6 @@ class DocumentsApi extends API
         $_POST["updated_at"] = date("Y-m-d H:i:s", time());
         return parent::post();
     }
-    function getPermission()
-    {
-        if (!getCurrentUser()) {
-            HttpResponse(array("detail" => "needs authentication"), 401);
-        }
-        $path = get_path();
-        if (count($path) != 1) {
-            $bd = ($this->getModel()->get($this->path_field, $path[1]));
-            if (count($bd) == 0) {
-                HttpResponse(array("detail" => "not found"), 404);
-            }
-            if ($bd["issued_by"] != getCurrentUser()["id"]) {
-                HttpResponse(array("detail" => "Not Allowed"), 403);
-            }
-        }
-    }
 }
 class LinksApi extends API
 {
@@ -291,6 +294,9 @@ class LinksApi extends API
     function getModel()
     {
         return new Link();
+    }
+    function post()
+    {
     }
 }
 
@@ -366,5 +372,28 @@ class RateApi extends API
     function getModel()
     {
         return new Rate();
+    }
+}
+class ImagesApi extends API
+{
+    public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
+    public $required_fields = array("images");
+    public $fields = array("images", "city", "spot");
+    public $table = "image";
+
+    function getModel()
+    {
+        return new Images();
+    }
+    function post()
+    {
+        $ids = UploadHandler::uplaod_many($this->table . "s", array("png", "jpeg", "jpg", "gifs"), table: $this->table);
+        $url = array();
+        foreach ($ids as $id) {
+            Database::update($this->table, array("id" => $id, "spot" => isset($_POST["spot"]) ? $_POST["spot"] : null, "city" => isset($_POST["city"]) ? $_POST["city"] : null));
+            array_push($url, (new Images())->get("id", $id));
+        }
+
+        return array_merge($_POST, array("images" => $url));
     }
 }

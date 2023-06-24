@@ -34,7 +34,7 @@ switch (array_shift($path)) {
         (new DocumentsApi())->view();
         break;
     case "links":
-        (new LinksApi)->view();
+        (new LinksApi())->view();
         break;
     case "address":
         break;
@@ -47,8 +47,11 @@ switch (array_shift($path)) {
     case "city":
         (new CityApi)->view();
         break;
-    case "rate":
+    case "rates":
         (new RateApi)->view();
+        break;
+    case "images":
+        (new ImagesApi())->view();
         break;
     case "":
         not_found();
