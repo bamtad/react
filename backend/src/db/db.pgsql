@@ -87,15 +87,15 @@ CREATE TABLE
 
 -- Constraints
 ALTER TABLE "link_permission"
-ADD CONSTRAINT fk_link_link_permission FOREIGN KEY ("link") REFERENCES "link" (id),
+ADD CONSTRAINT fk_link_link_permisssion FOREIGN KEY ("link") REFERENCES "link" (id),
 ADD CONSTRAINT fk_user_link_permission FOREIGN KEY ("user") REFERENCES "user" (id);
 
 ALTER TABLE "doc_link"
 ADD CONSTRAINT fk_doc_doc_link FOREIGN KEY ("document") REFERENCES "document" (id),
-ADD CONSTRAINT fk_link_doc_link FOREIGN KEY ("link") REFERENCES "link" (id);
+ADD CONSTRAINT fk_link_doc_link FOREIGN KEY ("link") REFERENCES "linsk" (id);
 
 ALTER TABLE "link"
-ADD CONSTRAINT fk_link_owner FOREIGN KEY ("owner") REFERENCES "user" (id)
+ADD CONSTRAINT fk_link_owner FOREIGN KEY ("owner") REFERENCES "user" (id),
 ADD CONSTRAINT fk_qr_code_link FOREIGN KEY ("qr_code") REFERENCES "file" (id);
 
 ALTER TABLE "document"

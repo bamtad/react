@@ -69,7 +69,7 @@ export default function DashboardLayout(props) {
         </div>
       </div>
       <div className="container mx-auto">
-        <div className="h-12 w-full bg-orange-50 rounded-b-md flex flex-row-reverse" >
+        <div className="h-8 w-full bg-orange-50 rounded-b-md flex flex-row-reverse" >
         <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-orange-200 rounded-lg">
             <img
