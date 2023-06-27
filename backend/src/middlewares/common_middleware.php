@@ -15,8 +15,9 @@ function HttpResponse($body, $status_code = 200)
     echo json_encode($body);
     exit;
 }
-function multiparser(array &$a_data)
+function multiparser(&$a_data)
 {
+    // $a_data=array();
     // read incoming data
     $input = file_get_contents('php://input');
 
@@ -73,6 +74,127 @@ function pdf_image($path)
         $image->writeImage('/medias/' . $filename);
     }
 
-    // Destroy the Imagick object
     $pdf->destroy();
 }
+// if($_SERVER["REQUEST_METHOD"]=="PATCH"){
+//     $type=$_SERVER["CONTENT_TYPE"];
+//     $type=explode(";",$type);
+//     HttpResponse($type);
+// }
+// function some()
+// {
+
+//     if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
+//         $CHUNK = 8192;
+
+
+
+//         try {
+
+//             if (!($putData = fopen("php://input", "r")))
+
+//                 throw new Exception("Can't get PUT data.");
+
+
+//             // now the params can be used like any other variable
+
+
+//             $tot_write = 0;
+
+//             $tmpFileName = "/var/tmp/PUT_FILE";
+
+//             // Create a temp file
+
+//             if (!is_file($tmpFileName)) {
+
+//                 fclose(fopen($tmpFileName, "x")); //create the file and close it
+
+//                 // Open the file for writing
+
+//                 if (!($fp = fopen($tmpFileName, "w")))
+
+//                     throw new Exception("Can't write to tmp file");
+
+
+
+//                 // Read the data a chunk at a time and write to the file
+
+//                 while ($data = fread($putData, $CHUNK)) {
+
+//                     $chunk_read = strlen($data);
+
+//                     if (($block_write = fwrite($fp, $data)) != $chunk_read)
+
+//                         throw new Exception("Can't write more to tmp file");
+
+
+
+//                     $tot_write += $block_write;
+//                 }
+
+
+
+//                 if (!fclose($fp))
+
+//                     throw new Exception("Can't close tmp file");
+
+
+
+//                 unset($putData);
+//             } else {
+
+//                 // Open the file for writing
+
+//                 if (!($fp = fopen($tmpFileName, "a")))
+
+//                     throw new Exception("Can't write to tmp file");
+
+
+
+//                 // Read the data a chunk at a time and write to the file
+
+//                 while ($data = fread($putData, $CHUNK)) {
+
+//                     $chunk_read = strlen($data);
+
+//                     if (($block_write = fwrite($fp, $data)) != $chunk_read)
+
+//                         throw new Exception("Can't write more to tmp file");
+
+
+
+//                     $tot_write += $block_write;
+//                 }
+
+
+
+//                 if (!fclose($fp))
+
+//                     throw new Exception("Can't close tmp file");
+
+
+
+//                 unset($putData);
+//             }
+
+
+
+//             if ($tot_write != $file_size)
+
+//                 throw new Exception("Wrong file size");
+
+
+
+//             $md5_arr = explode(' ', exec("md5sum $tmpFileName"));
+
+//             $md5 = $md5sum_arr[0];
+
+//             if ($md5 != $md5sum)
+
+//                 throw new Exception("Wrong md5");
+//         } catch (Exception $e) {
+
+//             echo '', $e->getMessage(), "\n";
+//         }
+//     }
+// }

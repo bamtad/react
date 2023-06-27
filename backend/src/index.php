@@ -53,6 +53,9 @@ switch (array_shift($path)) {
     case "images":
         (new ImagesApi())->view();
         break;
+    case "comments":
+        (new CommentApi())->view();
+        break;
     case "":
         not_found();
         break;

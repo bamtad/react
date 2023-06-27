@@ -47,7 +47,7 @@ class API
                 }
                 if (count($req) != 0) {
                     $msg = array(...$req);
-                    HttpResponse($msg);
+                    HttpResponse($msg,400);
                 }
                 HttpResponse($this->post(), 201);
                 break;
@@ -70,16 +70,7 @@ class API
         if (!getCurrentUser()) {
             HttpResponse(array("detail" => "needs authentication"), 401);
         }
-        $path = get_path();
-        if (count($path) != 1) {
-            $bd = ($this->getModel()->get($this->path_field, $path[1]));
-            if (count($bd) == 0) {
-                HttpResponse(array("detail" => "not found"), 404);
-            }
-            if ($bd["issued_by"] != getCurrentUser()["id"]) {
-                HttpResponse(array("detail" => "Not Allowed"), 403);
-            }
-        }
+        
     }
     function validateColumn(&$incoming)
     {
@@ -89,6 +80,13 @@ class API
                 unset($incoming[$inc]);
             }
         }
+    }
+    function isAuthenticated(){
+
+    }
+    function isAdminUser(){
+
+
     }
     function post()
     {
@@ -260,11 +258,24 @@ class FileApi extends API
 {
     public $allowed_methods = array("GET", "DELETE", "POST", "PATCH");
     public $required_fields = array("file");
-    public $fields = array("file");
+    public $fields = array("file","user","spot");
     public $table = "file";
     function getModel()
     {
         return new  File();
+    }
+    function post(){
+        $user=null;
+        if(isset($_POST["user"])){
+            $user=$_POST["user"];
+            unset($_POST["user"]);
+        }
+        $data=parent::post();
+        if($user!=null){
+            Database::update("user",array("profile_pic"=>$data["id"]));
+        }
+
+
     }
 }
 class DocumentsApi extends API
@@ -283,6 +294,20 @@ class DocumentsApi extends API
         $_POST["created_at"] = date("Y-m-d H:i:s", time());
         $_POST["updated_at"] = date("Y-m-d H:i:s", time());
         return parent::post();
+    }
+    function getPermission()
+    {
+        parent::getPermission();
+        $path = get_path();
+        if (count($path) != 1) {
+            $bd = ($this->getModel()->get($this->path_field, $path[1]));
+            if (count($bd) == 0) {
+                HttpResponse(array("detail" => "not found"), 404);
+            }
+            if ($bd["issued_by"] != getCurrentUser()["id"]) {
+                HttpResponse(array("detail" => "Not Allowed"), 403);
+            }
+        }
     }
 }
 class LinksApi extends API
@@ -326,6 +351,9 @@ class SpotApi extends API
         $data["spot_type"] = $type;
         return $data;
     }
+    function getPermission()
+    {
+    }
 }
 
 class SpotTypeApi extends API
@@ -354,12 +382,17 @@ class CommentApi extends API
 {
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array("spot", "body");
-    public $fields = array("spot", "body",);
+    public $fields = array("spot", "body");
     public $table = "comment";
 
     function getModel()
     {
         return new Comment();
+    }
+    function post(){
+        $id=getCurrentUser()["id"];
+        $_POST["user"]=$id;
+        return parent::post();
     }
 }
 class RateApi extends API
@@ -373,6 +406,9 @@ class RateApi extends API
     {
         return new Rate();
     }
+    // function get(){
+
+    // }
 }
 class ImagesApi extends API
 {

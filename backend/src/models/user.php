@@ -27,14 +27,14 @@ class Models
 
         if ($field == "all" && !$no_join) {
             if ("" != trim($addon)) {
-                return  Database::fetch("SELECT* From \"$this->table\" WHERE " . $addon);
+                return  Database::fetch("$this->sql_f WHERE " . $addon);
             }
-            return  Database::fetch("SELECT* From \"$this->table\"");
+            return  Database::fetch("$this->sql_f");
         } else if ($field == "all") {
             if ("" != trim($addon)) {
-                return Database::fetch("SELECT* From \"$this->table\" WHERE \"$field\"='$value'" . " and " . $addon);
+                return Database::fetch("$this->sql_f WHERE \"$field\"='$value'" . " and " . $addon);
             }
-            return Database::fetch("SELECT* From \"$this->table\" WHERE \"$field\"='$value'");
+            return Database::fetch("$this->sql_f WHERE \"$field\"='$value'");
         }
         if ("" != trim($addon)) {
             return  Database::fetch($this->sql_f . " WHERE \"$this->table\".\"$field\"='$value'"  . " and " . $addon);
@@ -64,7 +64,7 @@ class Models
     function update($id)
     {
         $data = json_decode(file_get_contents("php://input")) ?? array();
-        $_POST = array_merge($_POST, $data);
+        $_POST =$data;
         $ll = $this->get("id", $id, true)[0];
         if (!$ll || count($ll) == 0) {
             not_found();
@@ -148,7 +148,18 @@ class Link extends Models
 class Spot extends Models
 {
     public $table = "spot";
-    public $sql_f = "SELECT * FROM \"spot\"";
+    public $sql_f = "SELECT
+    \"spot\".\"id\",
+    \"spot\".\"name\",
+    \"spot\".\"description\",
+    \"city\".\"id\" as \"city_id\",
+    \"city\".\"name\" as \"city_name\",
+    \"location\".\"lat\" as \"lat\",
+    \"location\".\"long\" as \"long\"
+from
+    \"spot\"
+    LEFT JOIN \"city\" on \"spot\".\"city\" = \"city\".\"id\"
+    INNER JOIN \"location\" on \"location\".\"id\" = \"spot\".\"location\"";
 }
 class SpotType extends Models
 {
@@ -158,7 +169,17 @@ class SpotType extends Models
 class Comment extends Models
 {
     public $table = "comment";
-    public $sql_f = "SELECT * FROM \"comment\"";
+    public $sql_f = "SELECT
+    \"comment\".\"id\",
+    \"comment\".\"body\",
+    \"user\".\"id\" as \"user_id\",
+    \"user\".\"fname\" as \"username\",
+    \"file\".\"url\" as \"profile\",
+    \"comment\".\"spot\"
+from
+    \"comment\"
+    JOIN \"user\" on \"user\".\"id\" = \"comment\".\"user\"
+    LEFT JOIN \"file\" on \"user\".\"profile_pic\" = \"file\".\"id\"";
 }
 class Rate extends Models
 {
