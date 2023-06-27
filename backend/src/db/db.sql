@@ -90,3 +90,5 @@ ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id)
     ADD CONSTRAINT fk_bg_user FOREIGN KEY ("bg_pic") References "file" (id);
 ALTER TABLE "file"
 ADD CONSTRAINT fk_images_document FOREIGN KEY ("document") REFERENCES "document" (id);
+--@block
+SELECT * FROM "comment";
