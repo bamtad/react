@@ -44,3 +44,5 @@ FROM
 WHERE
     owner = 3
     or "issued_by" = 3;
+--@block
+SELECT * FROM "user_type" ;
