@@ -2,14 +2,27 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { RiHome2Line, RiUserLine, RiNotificationLine, RiSettings2Line, RiLogoutBoxLine, RiArrowRightSLine } from "react-icons/ri";
 import { MdKeyboardArrowDown } from 'react-icons/md';
+import { getAuth, signOut } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function DashboardLayout(props) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
+  const handleLogout = async () => {
+    console.log('hey')
+    try {
+        const auth = getAuth();
+        await signOut(auth);
+        navigate('/Auth/login');
+    } catch (error) {
+        // Handle any errors that occur during the logout process
+        console.log('Logout error:', error);
+    }
+};
   return (
     <div className="flex">
       <div className={`flex flex-col fixed h-screen p-3 bg-orange-100 text-zinc-900 shadow ${sidebarOpen ? "w-60" : "w-16"} pt-10`}>
@@ -58,18 +71,18 @@ export default function DashboardLayout(props) {
                   <span className={`${sidebarOpen ? "" : "hidden"} `}>Settings</span>
                 </NavLink>
               </li>
-              <li className="rounded-sm">
-                <a href="#" className="flex items-center p-2 space-x-3 rounded-md hover:bg-orange-200">
+              <li className="w-full h-10  rounded-sm" onClick={handleLogout} >
+                <div className="flex items-center p-2 space-x-3 rounded-md hover:bg-orange-200">
                   <RiLogoutBoxLine className={`w-6 h-6 ${sidebarOpen ? "md:w-12" : "md:w-6 md:h-6"}`} />
                   <span className={`${sidebarOpen ? "" : "hidden"} `}>Logout</span>
-                </a>
+                </div>
               </li>
             </ul>
           </div>
         </div>
       </div>
       <div className="container mx-auto">
-        <div className="h-12 w-full bg-orange-50 rounded-b-md flex flex-row-reverse" >
+        <div className="h-8 w-full bg-orange-50 rounded-b-md flex flex-row-reverse" >
         <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-orange-200 rounded-lg">
             <img
