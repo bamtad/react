@@ -6,6 +6,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import axios from 'axios';
 
 const firebaseApp = initializeApp(firebaseConfig)
 
@@ -64,7 +65,19 @@ const validateEmail = (email) => {
     if(error===''){
       setLoading(true)
       try {
-         const userCredential= await createUserWithEmailAndPassword(auth,email, password)
+         
+        const userCredential= await createUserWithEmailAndPassword(auth,email, password)
+         
+        //  const response=await axios.post("http://localhost:8000/users/",{
+        //   Name:fullName,
+        //   email:email,
+        //   password:password })
+        
+        // setSubmittedData(response.data);
+        
+        // setName('');
+       
+
         setLoading(false); // Hide loading indicator
         navigate('/login')
       } 
@@ -74,6 +87,7 @@ const validateEmail = (email) => {
         setLoading(false); // Hide loading indicator
         setError('Registration failed. Please try again.'); // Display error message
       };
+
     }
   };
 
@@ -149,7 +163,7 @@ const validateEmail = (email) => {
                 type="button"
                 onClick={handleRegister}
                 >
-                 {loading ? "Logging in..." : "Login"}
+                 {loading ? "signing up..." : "Login"}
 
               </button>
               {error && <p className="text-error mt-2">{error}</p>} {/* Display error message */}
