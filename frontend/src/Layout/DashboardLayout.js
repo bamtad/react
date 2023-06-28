@@ -9,10 +9,22 @@ import {
   RiArrowRightSLine,
 } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
-
+import { getAuth, signOut } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 export default function DashboardLayout(props) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    console.log('hey')
+    try {
+        const auth = getAuth();
+        await signOut(auth);
+        navigate('/login');
+    } catch (error) {
+        // Handle any errors that occur during the logout process
+        console.log('Logout error:', error);
+    }
+};
   const handleToggleSidebar = () => {
     setSidebarOpen(true);
   };
@@ -106,21 +118,12 @@ export default function DashboardLayout(props) {
                   </span>
                 </NavLink>
               </li>
-              <li className="rounded-sm">
-                <a
-                  href="#"
-                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-zinc-700"
-                >
-                  <RiLogoutBoxLine
-                    className={`w-6 h-6 ${
-                      sidebarOpen ? "md:w-12" : "md:w-6 md:h-6"
-                    }`}
-                  />
-                  <span className={`${sidebarOpen ? "" : "hidden"} `}>
-                    Logout
-                  </span>
-                </a>
-              </li>
+              <button className="w-full rounded-sm" onClick={handleLogout} >
+                <div className="flex items-center p-2 space-x-3 rounded-md hover:bg-orange-200">
+                  <RiLogoutBoxLine className={`w-6 h-6 ${sidebarOpen ? "md:w-12" : "md:w-6 md:h-6"}`} />
+                  <span className={`${sidebarOpen ? "" : "hidden"} `}>Logout</span>
+                </div>
+              </button>
             </ul>
           </div>
         </div>
