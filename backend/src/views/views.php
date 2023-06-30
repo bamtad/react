@@ -9,7 +9,11 @@ use Models\File;
 use Models\Comment;
 use Models\Images;
 use Models\Rate;
+<<<<<<< HEAD
 use Models\SpotType;x
+=======
+use Models\SpotType;
+>>>>>>> ca9e948c1fbec2f80125ddf986914c0766a068c2
 use Models\City;
 
 class API

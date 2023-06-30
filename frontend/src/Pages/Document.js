@@ -26,7 +26,7 @@ function ComponentView() {
         <AiOutlineCloudUpload style={{ height: "150", width: "150" }}></AiOutlineCloudUpload>
     </div>)
 }
-export default CreateLinkCard
+export default ComponentView
 function CreateLinkCard() {
     const styles = {
         color: 'black',
