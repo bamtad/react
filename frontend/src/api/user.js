@@ -1,0 +1,5 @@
+class network {
+    static post() {
+
+    }
+}

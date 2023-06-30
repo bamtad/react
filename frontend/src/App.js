@@ -10,6 +10,7 @@ import Profile from "./Pages/user/Profile";
 import Notification from "./Pages/user/Notification";
 import Setting from "./Pages/user/Setting";
 
+import Document from "./Pages/user/Notification";
 import AdminDashboard from "./Pages/admin/AdminDashboard";
 import AdminProfile from "./Pages/admin/AdminProfile";
 import AdminNotification from "./Pages/admin/AdminNotification";
@@ -76,6 +77,12 @@ function App() {
             path="/adminsetting"
             Component={withAuthentication(AdminSetting)}
           />
+          <Route
+            path="/document"
+            Component={withAuthentication(Document)}
+          
+  
+  />
 
         </Routes>
       </Router>

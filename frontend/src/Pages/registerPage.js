@@ -6,26 +6,26 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import axios from 'axios';
+import axios from "axios";
 
-const firebaseApp = initializeApp(firebaseConfig)
+const firebaseApp = initializeApp(firebaseConfig);
 
 function RegisterPage() {
-  const auth = getAuth()
+  const auth = getAuth();
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-// Function to validate email format
-const validateEmail = (email) => {
-  // Regular expression for email validation
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailPattern.test(email);
-};
+  // Function to validate email format
+  const validateEmail = (email) => {
+    // Regular expression for email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -44,50 +44,49 @@ const validateEmail = (email) => {
   };
 
   const handleRegister = async () => {
-    setError(''); // Clear any previous errors
+    setError(""); // Clear any previous errors
 
-     // Perform form validation
-  if (!fullName.trim() || !email.trim() || !password.trim()) {
-    setError('Please fill in all fields.');
-    return;
-  }
+    // Perform form validation
+    if (!fullName.trim() || !email.trim() || !password.trim()) {
+      setError("Please fill in all fields.");
+      return;
+    }
 
-  if (!validateEmail(email)) {
-    setError('Please enter a valid email address.');
-    return;
-  }
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
-  if (password.length < 6) {
-    setError('Password should be at least 6 characters long.');
-    return;
-  }
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters long.");
+      return;
+    }
 
-    if(error===''){
-      setLoading(true)
+    if (error === "") {
+      setLoading(true);
       try {
-         
-        const userCredential= await createUserWithEmailAndPassword(auth,email, password)
-         
-        //  const response=await axios.post("http://localhost:8000/users/",{
-        //   Name:fullName,
-        //   email:email,
-        //   password:password })
-        
-        // setSubmittedData(response.data);
-        
-        // setName('');
-       
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
+        const form = {
+          fname: fullName,
+          email: email,
+          password: password,
+        };
+        ////axios api
+        const response = await axios.post("http://localhost:8000/users/", form);
+        console.log(response)
         setLoading(false); // Hide loading indicator
-        navigate('/login')
-      } 
-      catch(error)  {
+        navigate("/login");
+      } catch (error) {
         // Registration failed, handle error
-        console.log('Registration error:', error);
+        console.log("Registration error:", error);
         setLoading(false); // Hide loading indicator
-        setError('Registration failed. Please try again.'); // Display error message
-      };
-
+        setError("Registration failed. Please try again."); // Display error message
+      }
     }
   };
 
@@ -138,7 +137,7 @@ const validateEmail = (email) => {
                 </span>
                 <input
                   className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
-                  type={passwordVisible ? 'text' : 'password'}
+                  type={passwordVisible ? "text" : "password"}
                   placeholder="Password"
                   value={password}
                   onChange={handlePasswordChange}
@@ -162,11 +161,11 @@ const validateEmail = (email) => {
                 className="bg-black hover:bg-zinc-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
                 type="button"
                 onClick={handleRegister}
-                >
-                 {loading ? "signing up..." : "Login"}
-
+              >
+                {loading ? "signing up..." : "Login"}
               </button>
-              {error && <p className="text-error mt-2">{error}</p>} {/* Display error message */}
+              {error && <p className="text-error mt-2">{error}</p>}{" "}
+              {/* Display error message */}
             </div>
             <Link
               className="text-zinc-800 hover:text-zinc-900 hover:underline hover:underline-offset-4"

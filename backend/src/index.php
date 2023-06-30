@@ -10,7 +10,7 @@ function get_path()
     $params = explode("/", $path);
     $n_path = array();
     foreach ($params as $p) {
-        if (trim($p) != "") {
+        if (trim($p) != "" && !preg_match("/^\?.*/", $p)) {
             array_push($n_path, $p);
         }
     }
@@ -24,13 +24,37 @@ switch (array_shift($path)) {
     case "login":
         (new LoginApi())->view();
         break;
+    case "logout":
+        (new LogoutApi())->view();
+        break;
+    case "files":
+        (new FileApi())->view();
+        break;
     case "documents":
         (new DocumentsApi())->view();
         break;
     case "links":
-        (new LinksApi)->view();
+        (new LinksApi())->view();
         break;
     case "address":
+        break;
+    case "spot":
+        (new SpotApi)->view();
+        break;
+    case "spot-type":
+        (new SpotTypeApi)->view();
+        break;
+    case "city":
+        (new CityApi)->view();
+        break;
+    case "rates":
+        (new RateApi)->view();
+        break;
+    case "images":
+        (new ImagesApi())->view();
+        break;
+    case "comments":
+        (new CommentApi())->view();
         break;
     case "":
         not_found();

@@ -1,0 +1,336 @@
+body {
+    background-color: aquamarine;
+
+}
+
+
+/* noraml  */
+
+
+.search-bar-suggestion-container {
+    font-family: 'Robot', sans-serif;
+    max-width: 500px;
+}
+
+.search-bar-suggestion-container .suggestion-input-container {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+}
+
+.suggestion-input-container .search-bar-input {
+    box-sizing: border-box;
+    height: 55px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 0 60px 0 20px;
+    font-size: 18px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+}
+
+.suggestion-input-container .search-bar-input:focus {
+    border-radius: 8px 8px 0px 0px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+
+}
+
+
+.suggestion-input-container .magnifying-icon {
+    height: 55px;
+    width: 55px;
+    line-height: 55px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.suggestion-input-container .suggestion-box {
+    padding: 0px;
+    max-height: 280px;
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: none;
+}
+
+.suggestion-input-container.active .suggestion-box {
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.suggestion-box li {
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+    display: none;
+}
+
+.suggestion-input-container.active .suggestion-box li {
+    display: block;
+}
+
+.suggestion-box li:hover {
+    box-sizing: border-box;
+    background-color: #efefef;
+}
+
+
+
+
+/* Ex-large */
+
+.search-bar-suggestion-container.exlg {
+    font-family: 'Robot', sans-serif;
+    max-width: 900px;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 7px;
+    box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container .search-bar-input {
+    box-sizing: border-box;
+    height: 50px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 0 60px 0 20px;
+    font-size: 18px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container .search-bar-input:focus {
+    border-radius: 8px 8px 0px 0px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container .magnifying-icon {
+    height: 50px;
+    width: 60px;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    background-color: #faf9f9;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container .suggestion-box {
+    padding: 0px;
+    max-height: 280px;
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: auto;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container.active .suggestion-box {
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-box li {
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+    display: none;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-input-container.active .suggestion-box li {
+    display: block;
+}
+
+.search-bar-suggestion-container.exlg .suggestion-box li:hover {
+    box-sizing: border-box;
+    background-color: #efefef;
+}
+
+
+
+
+
+/* large */
+
+.search-bar-suggestion-container.lg {
+    font-family: 'Robot', sans-serif;
+    max-width: 700px;
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container .search-bar-input {
+    box-sizing: border-box;
+    height: 50px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 0 60px 0 20px;
+    font-size: 16px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container .search-bar-input:focus {
+    border-radius: 8px 8px 0px 0px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+
+}
+
+
+.search-bar-suggestion-container.lg .suggestion-input-container .magnifying-icon {
+    height: 50px;
+    width: 55px;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container .suggestion-box {
+    padding: 0px;
+    max-height: 300px;
+    opacity: 0;
+    pointer-events: none;
+
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container.active .suggestion-box {
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-bar-suggestion-container.lg .suggestion-box li {
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+    display: none;
+}
+
+.search-bar-suggestion-container.lg .suggestion-input-container.active .suggestion-box li {
+    display: block;
+}
+
+.search-bar-suggestion-container.lg .suggestion-box li:hover {
+    box-sizing: border-box;
+    background-color: #efefef;
+}
+
+
+
+
+
+/* small */
+.search-bar-suggestion-container.sm {
+    font-family: 'Robot', sans-serif;
+    max-width: 300px;
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.sm .search-bar-input {
+    box-sizing: border-box;
+    height: 55px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    padding: 0 60px 0 20px;
+    font-size: 15px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container .search-bar-input:focus {
+    border-radius: 8px 8px 0px 0px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
+
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container .magnifying-icon {
+    height: 55px;
+    width: 55px;
+    line-height: 55px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container .suggestion-box {
+    padding: 0px;
+    max-height: 280px;
+    opacity: 0;
+    pointer-events: none;
+
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container.active .suggestion-box {
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-bar-suggestion-container.sm .suggestion-box li {
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+    display: none;
+}
+
+.search-bar-suggestion-container.sm .suggestion-input-container.active .suggestion-box li {
+    display: block;
+}
+
+.search-bar-suggestion-container.sm .suggestion-box li:hover {
+    box-sizing: border-box;
+    background-color: #efefef;
+}

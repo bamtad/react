@@ -6,6 +6,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import axios from "axios";
 
 const firebaseApp = initializeApp(firebaseConfig)
 function LoginPage() {
@@ -26,18 +27,26 @@ function LoginPage() {
     setEmail(e.target.value);
   };
 
+
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+
   };
 
   const handleLogin = async() => {
     setError(''); // Clear any previous errors
-    setLoading(true); // Show loading indicator
 
     if(!error){
       setLoading(true)
       try {
-        const userCredential = await signInWithEmailAndPassword(auth,email, password)
+        const userCredential = await signInWithEmailAndPassword(auth , email, password)
+        const formdata ={
+          email:email,
+          password:password
+        }
+        console.log(formdata)
+       // const response = await axios.post('http://localhost:8000/login/',formdata)
+      //  console.log(response)
         console.log('Login successful:', userCredential.user);
         setLoading(false); // Hide loading indicator
         navigate('/dashboard')
@@ -89,10 +98,10 @@ function LoginPage() {
                 </span>
                 <input
                   className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
-                  type={passwordVisible ? "text" : "password"}
+                  type={passwordVisible ? 'text' : 'password'}
                   placeholder="Password"
-                  value={password}
                   onChange={handlePasswordChange}
+                  value={password}
                 />
               </div>
               <button

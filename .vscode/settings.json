@@ -1,3 +1,28 @@
 {
-  "liveServer.settings.port": 5501
+  "liveServer.settings.port": 5501,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5436,
+      "driver": "PostgreSQL",
+      "name": "Docker Db",
+      "database": "myphpdb",
+      "username": "mure_ko",
+      "password": "mypassword123"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "Localhost",
+      "database": "mydb",
+      "username": "mure_ko",
+      "password": "hello1234"
+    }
+  ],
 }

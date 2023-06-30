@@ -1,9 +1,6 @@
 <?php
-
 namespace Models;
-
 use DB\Database;
-
 require(dirname(__DIR__) . "/db/database.php");
 class Models
 {
@@ -89,7 +86,7 @@ class Document extends Models
     \"document\".\"description\",
     \"document\".\"is_revoked\",
     \"document\".\"updated_at\",
-    \"document\".\"doc_type\",
+    \"document\".\"doc_type\",s
     \"document\".\"created_at\",
     \"document\".\"issued_at\",
     \"document\".\"issued_by\",

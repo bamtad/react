@@ -58,14 +58,12 @@ class Database
         try {
             $stm = $stm->execute();
         } catch (PDOException $e) {
-            http_response_code(400);
             if ($e->getCode() == 23505) {
 
-                echo json_encode(array("detail" => $e->errorInfo[2]));
-                exit;
+                HttpResponse(array("detail" => $e->errorInfo[2]), 400);
             }
 
-            echo json_encode(array("detail" => $e->getMessage()));
+            HttpResponse(array("detail" => $e->getMessage()), 400);
         }
         return $db->lastInsertId();
     }
@@ -73,8 +71,9 @@ class Database
     {
         $db = Database::getConnection();
         $stm = $db->prepare($string);
+        // HttpResponse(array("detail" => $string));
         if (!$stm->execute()) {
-            die("Error: " . $stm->errorInfo()[2]);
+            HttpResponse(array("Error: " . $stm->errorInfo()[2]), 400);
         }
         return ($stm->fetchAll(PDO::FETCH_ASSOC));
     }
@@ -83,13 +82,13 @@ class Database
         $sql = "SELECT * document where owner=$id";
         return Database::fetch($sql);
     }
-    static function get($table, $data, $no_join = false)
+    static function get($table, $data, $no_join = false, string $filter = "")
     {
 
         $db = Database::getConnection();
 
 
-        $sql = "SELECT* FROM \"$table\" WHERE ";
+        $sql = "SELECT * FROM \"$table\" WHERE ";
         $addon = "";
         $index = 0;
 
@@ -101,11 +100,11 @@ class Database
 
                 $addon = $addon . " \"$d\" is NULL";
             } else {
-                $addon = $addon . " \"$d\" ILIKE '$v'";
+                $addon = $addon . " \"$d\" = '$v'";
             }
         }
-        $sql = $sql . $addon;
-
+        $sql = $sql . $addon . " " . $filter;
+        // HttpResponse(array("detail" => $sql));
         $stm = $db->prepare($sql);
 
         if (!$stm->execute()) {
@@ -144,7 +143,7 @@ class Database
         $stm = $db->prepare($sql);
 
         if (!$stm->execute()) {
-            die("Error: " . $stm->errorInfo()[2]);
+            HttpResponse(array("detail" => $stm->errorInfo()[2]), 500);
         }
     }
     static function delete($table, $data)
@@ -186,7 +185,7 @@ class Database
 
                 $addon = $addon . " \"$d\" is NULL";
             } else {
-                $addon = $addon . " \"$d\" ILIKE '$v'";
+                $addon = $addon . " \"$d\" = '$v'";
             }
         }
         $sql = $sql . $addon;
