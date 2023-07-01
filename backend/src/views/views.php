@@ -401,6 +401,10 @@ class SpotTypeApi extends API
     {
         return new SpotType();
     }
+    function getPermission()
+    {
+        
+    }
 }
 class CityApi extends API
 {

@@ -74,7 +74,7 @@ function CreateLinkCard({ isOpen = false, onClose }) {
       .then((response) => {
       })
       .catch((error) => {
-        if (error.response.status === 401)  navigate('/login');
+        // if (error.response.status === 401)  navigate('/login');
       });
   }, []);
   if (!isLogged) {
@@ -301,4 +301,4 @@ function DocumentHome(props) {
 function LinkItem() {
   return <ListItem>Hello</ListItem>;
 }
-export default DocumentHome;
+export default CreateLinkCard;
