@@ -76,9 +76,12 @@ function RegisterPage() {
           email: email,
           password: password,
         };
-        ////axios api
-        const response = await axios.post("http://localhost:8000/users/", form);
-        console.log(response)
+        
+        ////axios api PROBLEM HERE
+        // const response = await axios.post("http://localhost:8000/users/", form);
+        // console.log(response)
+
+
         setLoading(false); // Hide loading indicator
         navigate("/login");
       } catch (error) {
