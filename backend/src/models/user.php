@@ -20,22 +20,20 @@ class Models
     function get(array | string $field, $value = 0, bool $no_join = false)
     {
         $addon = $this->filters();
-
-        if (gettype($field) == "array") {
-            return  Database::filter($this->table, $field);
+        if($no_join){
+            $this->sql_f="SELECT * From \"$this->table\" ";
         }
 
-        if ($field == "all" && !$no_join) {
+        if (gettype($field) == "array") {
+            return  Database::filter($this->table, $field,ini_str:$this->sql_f);
+        }
+
+        if ($field == "all") {
             if ("" != trim($addon)) {
                 return  Database::fetch("$this->sql_f WHERE " . $addon);
             }
             return  Database::fetch("$this->sql_f");
-        } else if ($field == "all") {
-            if ("" != trim($addon)) {
-                return Database::fetch("$this->sql_f WHERE \"$field\"='$value'" . " and " . $addon);
-            }
-            return Database::fetch("$this->sql_f WHERE \"$field\"='$value'");
-        }
+        } 
         if ("" != trim($addon)) {
             return  Database::fetch($this->sql_f . " WHERE \"$this->table\".\"$field\"='$value'"  . " and " . $addon);
         }
@@ -63,8 +61,7 @@ class Models
 
     function update($id)
     {
-        $data = json_decode(file_get_contents("php://input")) ?? array();
-        $_POST =$data;
+    
         $ll = $this->get("id", $id, true)[0];
         if (!$ll || count($ll) == 0) {
             not_found();
@@ -130,16 +127,7 @@ class Link extends Models
     public $sql_f = "SELECT* FROM \"link\" ";
 
 
-    private function gen_url($length = 10)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomString .= $characters[$index];
-        }
-        return $randomString;
-    }
+   
     function extras()
     {
     }

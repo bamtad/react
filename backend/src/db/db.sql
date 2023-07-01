@@ -47,6 +47,7 @@ CREATE TABLE "notification" (
 );
 CREATE TABLE "link" (
     id SERIAL PRIMARY KEY,
+    "name" varchar(255) not null,
     "owner" int not null,
     "qr_code" int,
     "url" varchar(512) NOT NULL,
@@ -68,6 +69,7 @@ CREATE TABLE "link_permission" (
     "user" int not null,
     "link" int not null
 );
+
 -- Constraints
 ALTER TABLE "link_permission"
 ADD CONSTRAINT fk_link_link_permission FOREIGN KEY ("link") REFERENCES "link" (id) on Delete CASCADE,

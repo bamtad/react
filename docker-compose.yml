@@ -30,9 +30,12 @@ services:
   frontend:
     build:
       context: frontend
+    entrypoint: [sh, entrypoint.sh]
     volumes:
       - ./frontend/src:/frontend/src
       - ./frontend/public:/frontend/public
+      - ./frontend/package.json:/frontend/package.json
+      - ./frontend/entrypoint.sh:/frontend/entrypoint.sh
     depends_on:
       - backend
     ports:

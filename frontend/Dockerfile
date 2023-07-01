@@ -2,9 +2,8 @@ FROM node:alpine
 
 WORKDIR /frontend
 COPY package*.json ./
+COPY entrypoint.sh entrypoint.sh
 COPY . .
-
-RUN npm install -g npm
 RUN npm install
 
-CMD ["npm", "start","--","--watch"]
+ENTRYPOINT [ "npm","start","--","--watch" ]

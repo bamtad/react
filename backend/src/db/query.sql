@@ -44,5 +44,20 @@ FROM
 WHERE
     owner = 3
     or "issued_by" = 3;
+
 --@block
-SELECT * FROM "user_type" ;
+SELECT
+    "comment"."id",
+    "comment"."spot",
+    "comment"."body",
+    "user"."id" as "user_id",
+    "user"."email" as "email",
+    "file"."url" as "user_pp"
+
+FROM
+    "comment"
+    JOIN "user" on "user"."id" = "comment"."user"
+    LEFT JOIN "file" on "user"."profile_pic" = "file"."id";
+
+    --@block
+    SELECT * From "link";

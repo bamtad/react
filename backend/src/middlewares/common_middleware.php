@@ -11,6 +11,8 @@ function success_ok()
 function HttpResponse($body, $status_code = 200)
 {
     header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: http://localhost:8080');
+    header('Access-Control-Allow-Credentials: true');
     http_response_code($status_code);
     echo json_encode($body);
     exit;

@@ -82,7 +82,7 @@ class Database
         $sql = "SELECT * document where owner=$id";
         return Database::fetch($sql);
     }
-    static function get($table, $data, $no_join = false, string $filter = "")
+    static function get($table, $data,$ini_str, $no_join = false, string $filter = "")
     {
 
         $db = Database::getConnection();
@@ -139,7 +139,6 @@ class Database
         $sql = "UPDATE  \"$table\" set $columns where \"id\"= " . $id;
         $db = Database::getConnection();
 
-
         $stm = $db->prepare($sql);
 
         if (!$stm->execute()) {
@@ -168,27 +167,29 @@ class Database
             die("Error: " . $stm->errorInfo()[2]);
         }
     }
-    static function filter($table, $data)
+    static function filter($table, $data,$ini_str=null)
     {
 
         $db = Database::getConnection();
 
-        $sql = "SELECT* FROM \"$table\" WHERE ";
+        $sql = $ini_str ==null ? "SELECT* FROM \"$table\" WHERE ":$ini_str." Where ";
         $addon = "";
         $index = 0;
 
+        
         foreach ($data as $d => $v) {
             if ($index != 0) {
                 $addon = $addon . " AND";
             }
             if (strtolower($v) == "null") {
-
+                
                 $addon = $addon . " \"$d\" is NULL";
             } else {
                 $addon = $addon . " \"$d\" = '$v'";
             }
         }
         $sql = $sql . $addon;
+        // HttpResponse(array("detail"=>$sql));
 
         $stm = $db->prepare($sql);
 

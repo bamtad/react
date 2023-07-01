@@ -4,6 +4,9 @@ $content_type = explode(";", $_SERVER["CONTENT_TYPE"])[0];
 if ($content_type != "application/json" && $content_type != "multipart/form-data" && $_SERVER["REQUEST_METHOD"] != "GET" && $_SERVER["REQUEST_METHOD"] === "PATCH") {
     HttpResponse(array("detail" => "Un supported media type", "mime" => $content_type), 415);
 }
+if($content_type=="application/json"){
+    $_POST=json_decode(file_get_contents("php://input"),true)??array();
+}
 
 function method_not_allowed()
 {
@@ -14,7 +17,6 @@ function method_not_allowed()
 }
 function not_found()
 {
-    header('Content-Type: application/json; charset=utf-8');
     $msg = array("detail" => "Not Found");
     HttpResponse($msg, 404);
 }

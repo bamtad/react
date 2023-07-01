@@ -154,4 +154,7 @@
 
 .side-bar.active ul li .tooltip {
     display: none;
+    /* justify-content:space-evenly */
+    /* align-items:start ; */
+    /* align-items: ; */
 }
