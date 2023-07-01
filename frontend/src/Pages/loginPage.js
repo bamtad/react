@@ -6,6 +6,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import axios from "axios";
 
 const firebaseApp = initializeApp(firebaseConfig)
 function LoginPage() {
@@ -26,18 +27,26 @@ function LoginPage() {
     setEmail(e.target.value);
   };
 
+
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+
   };
 
   const handleLogin = async() => {
     setError(''); // Clear any previous errors
-    setLoading(true); // Show loading indicator
 
     if(!error){
       setLoading(true)
       try {
-        const userCredential = await signInWithEmailAndPassword(auth,email, password)
+        const userCredential = await signInWithEmailAndPassword(auth , email, password)
+        const formdata ={
+          email:email,
+          password:password
+        }
+        console.log(formdata)
+       // const response = await axios.post('http://localhost:8000/login/',formdata)
+      //  console.log(response)
         console.log('Login successful:', userCredential.user);
         setLoading(false); // Hide loading indicator
         navigate('/dashboard')
@@ -56,7 +65,7 @@ function LoginPage() {
 
   return (
     <div>
-      <section className="h-screen  flex flex-col md:flex-row justify-center space-y-20 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
+      <section className="h-screen w-full flex flex-col md:flex-row justify-center space-y-20 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
         <div className="md:w-1/3 max-w-sm">
           <img
             src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
@@ -91,6 +100,8 @@ function LoginPage() {
                   className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
                   type={passwordVisible ? 'text' : 'password'}
                   placeholder="Password"
+                  onChange={handlePasswordChange}
+                  value={password}
                 />
               </div>
               <button

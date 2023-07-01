@@ -72,7 +72,7 @@ export default function DashboardLayout(props) {
               </li>
               <li className="rounded-sm">
                 <NavLink
-                  to="/notification"
+                  to="/document"
                   className="flex items-center p-2 space-x-3 rounded-md hover:bg-zinc-700"
                   activeClassName="bg-violet-100 text-zinc-900 font-semibold"
                 >
