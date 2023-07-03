@@ -9,11 +9,7 @@ use Models\File;
 use Models\Comment;
 use Models\Images;
 use Models\Rate;
-<<<<<<< HEAD
-use Models\SpotType;x
-=======
 use Models\SpotType;
->>>>>>> ca9e948c1fbec2f80125ddf986914c0766a068c2
 use Models\City;
 
 class API
@@ -36,7 +32,6 @@ class API
         if (!in_array($method, $this->allowed_methods)) {
             method_not_allowed();
         }
-        // HttpResponse($_POST);
         switch ($method) {
             case "POST":
                 $this->validateColumn($_POST);
@@ -77,7 +72,6 @@ class API
         }
         
     }
-
     function validateColumn(&$incoming)
     {
 
@@ -144,8 +138,6 @@ class API
     function patch()
     {
         $path = get_path();
-        $data = json_decode(file_get_contents("php://input")) ?? array();
-        $_POST =$data;
         if (count($path) != 1) {
             $up = ($this->getModel())->update($path[1]);
             HttpResponse($up, 200);
@@ -153,7 +145,6 @@ class API
             method_not_allowed();
         }
         not_found();
-
     }
     function delete()
     {
@@ -322,40 +313,15 @@ class DocumentsApi extends API
 class LinksApi extends API
 {
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
-    public $required_fields = array("name","documents","users");
+    public $required_fields = array();
     public $table = "link";
-    public $fields = array("name","documents","users");
-    private function gen_url($length = 10)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomString .= $characters[$index];
-        }
-        return $randomString;
-    }
+    public $fields = array();
     function getModel()
-
     {
         return new Link();
     }
     function post()
     {
-        $_POST["url"]= $this->gen_url();
-        $_POST["owner"]=getCurrentUser()["id"];
-        $docs=$_POST["documents"];
-        $usr=$_POST["users"];
-        // HttpResponse($_POST);
-        unset($_POST["documents"]);
-        unset($_POST["users"]);
-        $data=parent::post();
-        foreach($docs as $did)
-        Database::insert("doc_link",array("link"=>$data["id"],"document"=>$did));
-        foreach($usr as $u)
-        Database::insert("link_permission",array("user"=>$u,"link"=>$data["id"]));
-
-        return $data;
     }
 }
 
@@ -388,11 +354,6 @@ class SpotApi extends API
     function getPermission()
     {
     }
-    function patch()
-    {
-        // HttpResponse($_POST);
-        return parent::patch();
-    }
 }
 
 class SpotTypeApi extends API
@@ -404,10 +365,6 @@ class SpotTypeApi extends API
     function getModel()
     {
         return new SpotType();
-    }
-    function getPermission()
-    {
-        
     }
 }
 class CityApi extends API
@@ -437,10 +394,6 @@ class CommentApi extends API
         $_POST["user"]=$id;
         return parent::post();
     }
-    function getPermission()
-    {
-        
-    }
 }
 class RateApi extends API
 {
@@ -453,11 +406,9 @@ class RateApi extends API
     {
         return new Rate();
     }
-    function getPermission()
-    {
-        
-    }
-    
+    // function get(){
+
+    // }
 }
 class ImagesApi extends API
 {
@@ -480,8 +431,5 @@ class ImagesApi extends API
         }
 
         return array_merge($_POST, array("images" => $url));
-    }
-    function getPermission(){
-
     }
 }

@@ -6,7 +6,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import axios from "axios";
+import { getInstance } from "../api/apihanlder";
 
 const firebaseApp = initializeApp(firebaseConfig)
 function LoginPage() {
@@ -36,6 +36,13 @@ function LoginPage() {
   const handleLogin = async() => {
     setError(''); // Clear any previous errors
 
+    let api=getInstance();
+
+
+    // send the post request and do something with response from future
+    api.post("/login",{email:email,password:password}).then((res)=>console.log(res));
+    
+
     if(!error){
       setLoading(true)
       try {
@@ -49,7 +56,7 @@ function LoginPage() {
       //  console.log(response)
         console.log('Login successful:', userCredential.user);
         setLoading(false); // Hide loading indicator
-        navigate('/dashboard')
+        navigate('/profile')
 
       } catch (error) {
         setLoading(false); // Hide loading indicator

@@ -43,11 +43,14 @@ function App() {
           <Route path="/" element={<Landingpage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-
+          
+          {/* 
           <Route
             path="/dashboard"
             Component={withAuthentication(Dashboard)}
-          />
+          /> */}
+
+
           <Route
             path="/profile"
             Component={withAuthentication(Profile)}
