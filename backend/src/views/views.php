@@ -73,7 +73,6 @@ class API
         }
         
     }
-
     function validateColumn(&$incoming)
     {
 
@@ -140,8 +139,6 @@ class API
     function patch()
     {
         $path = get_path();
-        $data = json_decode(file_get_contents("php://input")) ?? array();
-        $_POST =$data;
         if (count($path) != 1) {
             $up = ($this->getModel())->update($path[1]);
             HttpResponse($up, 200);
@@ -149,7 +146,6 @@ class API
             method_not_allowed();
         }
         not_found();
-
     }
     function delete()
     {
@@ -319,7 +315,7 @@ class DocumentsApi extends API
 class LinksApi extends API
 {
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
-    public $required_fields = array("name","documents","users");
+    public $required_fields = array();
     public $table = "link";
     public $path_field="url";
     public $fields = array("name","documents","users");
@@ -336,7 +332,6 @@ class LinksApi extends API
     }
     
     function getModel()
-
     {
         return new Link();
     }
@@ -416,11 +411,6 @@ class SpotApi extends API
     function getPermission()
     {
     }
-    function patch()
-    {
-        // HttpResponse($_POST);
-        return parent::patch();
-    }
 }
 
 class SpotTypeApi extends API
@@ -432,10 +422,6 @@ class SpotTypeApi extends API
     function getModel()
     {
         return new SpotType();
-    }
-    function getPermission()
-    {
-        
     }
 }
 class CityApi extends API
@@ -465,10 +451,6 @@ class CommentApi extends API
         $_POST["user"]=$id;
         return parent::post();
     }
-    function getPermission()
-    {
-        
-    }
 }
 class RateApi extends API
 {
@@ -481,11 +463,9 @@ class RateApi extends API
     {
         return new Rate();
     }
-    function getPermission()
-    {
-        
-    }
-    
+    // function get(){
+
+    // }
 }
 class ImagesApi extends API
 {
@@ -508,8 +488,5 @@ class ImagesApi extends API
         }
 
         return array_merge($_POST, array("images" => $url));
-    }
-    function getPermission(){
-
     }
 }
