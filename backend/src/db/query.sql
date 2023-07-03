@@ -13,7 +13,7 @@ SELECT
     "file"."url" as "url"
 FROM
     "document"
-    JOIN "file" on "file"."id" = "document"."url";
+    JOIN "file" on "file"."id" = "document"."url" WHERE "owner"= 5 OR "issued_by"=5;
 
 -- Querying User
 SELECT
@@ -60,4 +60,32 @@ FROM
     LEFT JOIN "file" on "user"."profile_pic" = "file"."id";
 
     --@block
-    SELECT * From "link";
+
+SELECT "link"."owner", "document".
+
+--@block Filtering Link Document
+SELECT
+"link"."id",
+    "document"."id" as "doc_id",
+    "link"."name" as "link_name",
+    "link"."url",
+    "document"."name",
+    "document"."owner",
+    "document"."description",
+    "document"."is_revoked",
+    "document"."updated_at",
+    "document"."doc_type",
+    "document"."created_at",
+    "document"."issued_at",
+    "document"."issued_by",
+    "file"."url" as "file_url"
+FROM
+    "doc_link"
+JOIN "document" on "document"."id"="doc_link"."document"
+JOIN "link" on  "link"."id"="doc_link"."link"
+LEFT JOIN "link_permission" on "link_permission"."link"="link"."id"
+LEFT JOIN "user" on "user"."id"="link_permission"."id"
+    JOIN "file" on "file"."id" = "document"."url" -- WHERE "link"."url"='Epu6OdaVDz' and "user"."id"=1;
+
+--@block
+SELECT* From "link";

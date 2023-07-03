@@ -9,11 +9,7 @@ use Models\File;
 use Models\Comment;
 use Models\Images;
 use Models\Rate;
-<<<<<<< HEAD
-use Models\SpotType;x
-=======
 use Models\SpotType;
->>>>>>> ca9e948c1fbec2f80125ddf986914c0766a068c2
 use Models\City;
 
 class API
@@ -36,7 +32,6 @@ class API
         if (!in_array($method, $this->allowed_methods)) {
             method_not_allowed();
         }
-        // HttpResponse($_POST);
         switch ($method) {
             case "POST":
                 $this->validateColumn($_POST);
@@ -44,6 +39,7 @@ class API
                 if (count(get_path()) != 1) {
                     method_not_allowed();
                 }
+
                 $req = array();
                 foreach ($this->required_fields as $p) {
                     if (!in_array($p, array_merge(array_keys($_POST), array_keys($_FILES)))) {
@@ -313,7 +309,8 @@ class DocumentsApi extends API
             if (count($bd) == 0) {
                 HttpResponse(array("detail" => "not found"), 404);
             }
-            if ($bd["issued_by"] != getCurrentUser()["id"]) {
+            
+            if ($bd[0]["issued_by"] != getCurrentUser()["id"]) {
                 HttpResponse(array("detail" => "Not Allowed"), 403);
             }
         }
@@ -324,7 +321,9 @@ class LinksApi extends API
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array("name","documents","users");
     public $table = "link";
+    public $path_field="url";
     public $fields = array("name","documents","users");
+
     private function gen_url($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -335,10 +334,40 @@ class LinksApi extends API
         }
         return $randomString;
     }
+    
     function getModel()
 
     {
         return new Link();
+    }
+    function get(){
+        $path = get_path();
+
+        if (count($path) != 1) {
+            $bd = ($this->getModel()->get($this->path_field, $path[1]));
+            if (count($bd) == 0) {
+                HttpResponse(array("detail" => "not found"), 404);
+            }
+            HttpResponse($bd, 200);
+        }
+        if (count($_SERVER["argv"]) != 0) {
+            $params = explode("&", $_SERVER["argv"][0]);
+            $item = array();
+            foreach ($params as $par) {
+                $q = explode("=", $par);
+                if (count($q) < 2) {
+                    continue;
+                }
+                $item[$q[0]] = $q[1];
+            }
+            $this->validateColumn($item);
+            if (count($item) != 0) {
+                $bd = ($this->getModel()->get($item));
+                HttpResponse($bd);
+            }
+        }
+
+        HttpResponse(($this->getModel()->get("all")), 200);
     }
     function post()
     {
@@ -346,7 +375,6 @@ class LinksApi extends API
         $_POST["owner"]=getCurrentUser()["id"];
         $docs=$_POST["documents"];
         $usr=$_POST["users"];
-        // HttpResponse($_POST);
         unset($_POST["documents"]);
         unset($_POST["users"]);
         $data=parent::post();

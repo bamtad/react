@@ -7,6 +7,7 @@ import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from "axios";
+import {getAxiosInstance} from "../api/apihanlder";
 
 const firebaseApp = initializeApp(firebaseConfig)
 function LoginPage() {
@@ -35,6 +36,10 @@ function LoginPage() {
 
   const handleLogin = async() => {
     setError(''); // Clear any previous errors
+    let api=getAxiosInstance();
+    api.get("/login",).then((res)=>console.log(res));
+
+    // api.post("/login",{email:email,password:password}).then((res)=>console.log(res));
 
     if(!error){
       setLoading(true)

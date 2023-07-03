@@ -3,17 +3,12 @@ import axios from 'axios';
 
 // Create an Axios instance with default configuration
 const api = axios.create({
-    withCredentials:true,
+    withCredentials:false,
   baseURL: 'http://localhost:8000/',
 });
 
 // Add an interceptor to catch cookies and send them with every request
-// api.interceptors.request.use((config) => {
-//   const cookies = document.cookie; // Get all cookies
-//   config.headers.Cookie = cookies; // Set the Cookie header
-//   return config;
-// });
-export function getInstance(){
+export function getAxiosInstance(){
     return api;
 }
 // Use the Axios instance to make API requests

@@ -39,7 +39,7 @@ services:
     depends_on:
       - backend
     ports:
-      - 5432:3000
+      - 3000:3000
     environment:
       - NODE_ENV=development
 
