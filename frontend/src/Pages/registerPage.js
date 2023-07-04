@@ -6,7 +6,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import axios from "axios";
+import { getInstance } from "../api/apihanlder";
 
 const firebaseApp = initializeApp(firebaseConfig);
 
@@ -19,6 +19,7 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const api = getInstance();
 
   // Function to validate email format
   const validateEmail = (email) => {
@@ -71,15 +72,6 @@ function RegisterPage() {
           password
         );
 
-        const form = {
-          fname: fullName,
-          email: email,
-          password: password,
-        };
-        
-        ////axios api PROBLEM HERE
-        // const response = await axios.post("http://localhost:8000/users/", form);
-        // console.log(response)
 
 
         setLoading(false); // Hide loading indicator
