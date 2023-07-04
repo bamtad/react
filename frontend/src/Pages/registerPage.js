@@ -6,7 +6,8 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import firebaseConfig from "../utils/firebaseconfig";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { getInstance } from "../api/apihanlder";
+import axios from "axios";
+import {getInstance} from "../api/apihanlder";
 
 const firebaseApp = initializeApp(firebaseConfig);
 
@@ -17,9 +18,9 @@ function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const api = getInstance();
 
   // Function to validate email format
   const validateEmail = (email) => {
@@ -43,6 +44,9 @@ function RegisterPage() {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
+  const handlePasswordChange2 = (e) => {
+    setPassword2(e.target.value);
+  };
 
   const handleRegister = async () => {
     setError(""); // Clear any previous errors
@@ -51,6 +55,12 @@ function RegisterPage() {
     if (!fullName.trim() || !email.trim() || !password.trim()) {
       setError("Please fill in all fields.");
       return;
+    }
+    if(password.trim()!=password2.trim()){
+      console.log(password)
+      console.log(password2)
+      setError("Password must match its confirmation")
+      return
     }
 
     if (!validateEmail(email)) {
@@ -66,12 +76,17 @@ function RegisterPage() {
     if (error === "") {
       setLoading(true);
       try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
+        
+        const form = {
+          fname: fullName,
+          email: email,
+          password: password,
+          password2:password2
+        };
+        let api=getInstance();
+        
+        const userCredential = await api.post("/users",form
         );
-
 
 
         setLoading(false); // Hide loading indicator
@@ -136,6 +151,30 @@ function RegisterPage() {
                   placeholder="Password"
                   value={password}
                   onChange={handlePasswordChange}
+                />
+              </div>
+              <button
+                className="-ml-8 mt-5 transform -translate-y-1/2 focus:outline-none"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <AiOutlineEyeInvisible className="text-gray-500 w-5 h-5" />
+                ) : (
+                  <AiOutlineEye className="text-gray-500 w-5 h-5" />
+                )}
+              </button>
+            </div>
+            <div className="mt-4 flex">
+              <div className="relative w-full">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center ">
+                  <RiLockPasswordLine className="text-gray-400" />
+                </span>
+                <input
+                  className="text-sm bg-zinc-100 w-full pl-10 pr-4 py-2 border border-solid border-gray-300 rounded"
+                  type={passwordVisible ? "text" : "password"}
+                  placeholder="Password"
+                  value={password2}
+                  onChange={handlePasswordChange2}
                 />
               </div>
               <button

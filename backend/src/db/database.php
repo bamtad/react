@@ -19,6 +19,7 @@ class Database
             $password = "mypassword123";
             try {
                 $db = new PDO("pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password");
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 Database::$con = $db;
             } catch (PDOException $e) {
                 echo "Database Connection Error" . $e;

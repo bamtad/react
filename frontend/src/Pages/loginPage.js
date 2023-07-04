@@ -40,28 +40,22 @@ function LoginPage() {
 
 
     // send the post request and do something with response from future
-    api.post("/login",{email:email,password:password}).then((res)=>console.log(res));
     
 
     if(!error){
       setLoading(true)
       try {
-        const userCredential = await signInWithEmailAndPassword(auth , email, password)
-        const formdata ={
-          email:email,
-          password:password
-        }
-        console.log(formdata)
-       // const response = await axios.post('http://localhost:8000/login/',formdata)
-      //  console.log(response)
-        console.log('Login successful:', userCredential.user);
+        const userCredential = await api.post("/login",{email:email,password:password})
+        // console.log('Login successful:', userCredential);
         setLoading(false); // Hide loading indicator
+
+
         navigate('/profile')
 
       } catch (error) {
         setLoading(false); // Hide loading indicator
 
-                // Login failed, handle error
+             // Login failed, handle error
         console.log('Login error:', error);
         setError('Login failed. Please check your credentials.'); // Display error message
         setLoading(false); // Hide loading indicator

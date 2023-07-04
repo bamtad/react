@@ -1,7 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
 import DashboardLayout from "../../Layout/DashboardLayout";
 import Breadcrumb from "../../Components/Breadcrump";
+import { getInstance } from "../../api/apihanlder";
+import {useNavigate} from "react-router-dom";
 function Profile() {
+  const navigate=useNavigate();
+  const [user,setUser]=useState({})
+  const [bg,setBg]=useState("")
+  const [profile_pic,setProfilePic]=useState("")
+  useEffect(() => {
+    getInstance()
+      .get("/current")
+      .then((response) => {
+        console.log(response);
+        setBg(response.data.bg_pic);
+        setProfilePic(response.data.profile_pic);
+//         console.log(response.data.profile_pic
+// );
+
+      })
+      .catch((error) => {
+        if (error.response.status === 401)  navigate('/login');
+      });
+  }, []);
+
+  const handleBgInputChange = event => {
+    let formData=new FormData();
+    formData.append("file",event.target.files[0]);
+    formData.append("field","bg_pic");
+    formData.append("user",user.id);
+    getInstance().post('http://localhost:8000/files', formData, {
+      withCredentials:true,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+}).then(response => {
+  
+  console.log('Upload successful:', response.data);
+  getInstance().get("/current").then((res)=>{setBg(res.data.bg_pic)
+    setUser(response.data);
+  
+  })
+  
+    })
+    .catch(error => {
+      console.error('Upload failed:', error);
+    });
+    
+  };
+  const handleProfileInputChange =  event => {
+    // setProfilePic(event.target.files[0]);
+    let formData=new FormData();
+    formData.append("file",event.target.files[0]);
+    formData.append("field","profile_pic");
+    formData.append("user",user.id);
+    getInstance().post('http://localhost:8000/files', formData, {
+      withCredentials:true,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+}).then(response => {
+      console.log('Upload successful:', response.data);
+       getInstance().get("/current").then((res)=>{
+        setProfilePic(res.data.profile_pic);
+        setUser(response.data);
+      })
+    })
+    .catch(error => {
+      console.error('Upload failed:', error);
+    });
+
+  };
   return (
     <DashboardLayout>
       <div className="w-full min-h-screen bg-bodydark">
@@ -9,8 +79,9 @@ function Profile() {
           <div className="mx-6 overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="relative z-10 h-35 md:h-65">
               <img
-                src="/avater.jpeg"
+                src={"http://localhost:8000/"+bg}
                 alt="profile"
+                
                 className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
               />
               <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
@@ -23,6 +94,7 @@ function Profile() {
                     name="cover"
                     id="cover"
                     className="sr-only"
+                    onInput={handleBgInputChange}
                   />
                   <span>
                     <svg
@@ -55,7 +127,7 @@ function Profile() {
               <div className="relative z-30 mx-auto -mt-22 h-20 w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
                 <div className="relative drop-shadow-2">
                   <img
-                    src="/avater.jpeg"
+                    src={"http://localhost:8000/"+ profile_pic}
                     alt="profile"
                     className="h-24 w-30 rounded-full object-cover"
                   />
@@ -88,6 +160,7 @@ function Profile() {
                       type="file"
                       name="profile"
                       id="profile"
+                      onInput={handleProfileInputChange}
                       className="sr-only"
                     />
                   </label>
@@ -95,7 +168,7 @@ function Profile() {
               </div>
               <div className="mt-4">
                 <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
-                  Danish Heilium
+                  {user.fname}
                 </h3>
                 <p className="font-medium">Ui/Ux Designer</p>
                 <div className="mx-auto mt-4.5 mb-5.5 grid max-w-94 grid-cols-3 rounded-md border border-stroke py-2.5 shadow-1 dark:border-strokedark dark:bg-[#37404F]">

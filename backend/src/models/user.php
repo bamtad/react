@@ -1,5 +1,7 @@
 <?php
 namespace Models;
+
+use API;
 use DB\Database;
 require(dirname(__DIR__) . "/db/database.php");
 class Models
@@ -18,7 +20,7 @@ class Models
     {
         $addon = $this->filters();
         if($no_join){
-            $this->sql_f="SELECT * From \"$this->table\" ";
+            $this->sql_f="SELECT * From \"$this->table\"";
         }
 
         if (gettype($field) == "array") {
@@ -104,7 +106,7 @@ class Document extends Models
     \"document\".\"description\",
     \"document\".\"is_revoked\",
     \"document\".\"updated_at\",
-    \"document\".\"doc_type\",s
+    \"document\".\"doc_type\",
     \"document\".\"created_at\",
     \"document\".\"issued_at\",
     \"document\".\"issued_by\",
@@ -113,21 +115,45 @@ FROM
     \"document\"
     JOIN \"file\" on \"file\".\"id\" = \"document\".\"url\"";
     public function filters()
+
     {
         $owner = getCurrentUser()["id"];
-        return " \"owner\" = $owner or \"issued_by\"=$owner";
+        return " \"owner\" = $owner  or \"issued_by\" = $owner";
     }
 }
 class Link extends Models
 {
+    public $filter_field="url";
     public $table = "link";
-    public $sql_f = "SELECT* FROM \"link\" ";
+    public $sql_f = "SELECT
+    \"document\".\"id\" as \"id\",
+    \"link\".\"name\" as \"link_name\",
+    \"link\".\"url\",
+    \"document\".\"name\",
+    \"document\".\"owner\",
+    \"document\".\"description\",
+    \"document\".\"is_revoked\",
+    \"document\".\"updated_at\",
+    \"document\".\"doc_type\",
+    \"document\".\"created_at\",
+    \"document\".\"issued_at\",
+    \"document\".\"issued_by\",
+    \"file\".\"url\" as \"file_url\"
+FROM
+    \"doc_link\"
+JOIN \"document\" on \"document\".\"id\"=\"doc_link\".\"document\"
+JOIN \"link\" on  \"link\".\"id\"=\"doc_link\".\"link\"
+    JOIN \"file\" on \"file\".\"id\" = \"document\".\"url\" ";
 
 
    
     function extras()
     {
     }
+    // function get(array | string $field, $value = 0, bool $no_join = false){
+    //     if
+
+    // }
 }
 
 class Spot extends Models
@@ -181,3 +207,4 @@ class City extends Models
     public $table = "city";
     public $sql_f = "SELECT * FROM \"city\"";
 }
+

@@ -81,7 +81,7 @@ function CreateLinkCard({ isOpen = false, onClose }) {
       .then((response) => {
       })
       .catch((error) => {
-        // if (error.response.status === 401)  navigate('/login');
+        if (error.response.status === 401)  navigate('/login');
       });
   }, []);
   if (!isLogged) {

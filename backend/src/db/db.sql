@@ -25,6 +25,10 @@ CREATE TABLE "user" (
     "updated_at" timestamp not null,
     "last_login" timestamp
 );
+-- ALTER TABLE "user"
+-- ADD COLUMN "bg_pic"  int;
+-- ALTER COLUMN "bg_pic" type int;
+-- SELECT * FROM "user";
 CREATE TABLE "document" (
     id SERIAL PRIMARY KEY,
     "name" varchar(255) not null,
@@ -88,7 +92,7 @@ ALTER TABLE "notification"
 ADD CONSTRAINT fk_to_notification FOREIGN KEY ("to") REFERENCES "user" (id),
     ADD CONSTRAINT fk_from_notification FOREIGN KEY ("from") REFERENCES "user" (id);
 ALTER TABLE "user"
-ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id),
+-- ADD CONSTRAINT fk_address_user FOREIGN KEY ("address") REFERENCES "address" (id),
     ADD CONSTRAINT fk_pp_user FOREIGN KEY ("profile_pic") References "file" (id),
     ADD CONSTRAINT fk_bg_user FOREIGN KEY ("bg_pic") References "file" (id);
 ALTER TABLE "file"

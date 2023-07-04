@@ -39,6 +39,7 @@ class API
                 if (count(get_path()) != 1) {
                     method_not_allowed();
                 }
+
                 $req = array();
                 foreach ($this->required_fields as $p) {
                     if (!in_array($p, array_merge(array_keys($_POST), array_keys($_FILES)))) {
@@ -164,7 +165,7 @@ class UsersApi extends API
 {
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array("fname", "email", "password", "password2");
-    public $fields = array("fname", "email", "password", "password2", "profile_pic");
+    public $fields = array("fname", "email", "password", "password2", "profile_pic","bg_pic");
     public $table = "user";
 
     function getModel()
@@ -190,6 +191,7 @@ class UsersApi extends API
             $msg = array("detail" => "password fields must match");
             HttpResponse($msg, 400);
         }
+        
         parent::post();
     }
     function get()
@@ -219,7 +221,7 @@ class LoginApi extends API
             $_SESSION["logged_in"] = true;
             $_POST["last_login"] =  date("Y-m-d H:i:s", time());
             (new User())->update($usr["id"]);
-            return array("detail" => "Login Succesfull");
+            return $usr ;
         }
         HttpResponse(array("detail" => "Invalid Login Credentials"), 404);
     }
@@ -258,22 +260,28 @@ class FileApi extends API
 {
     public $allowed_methods = array("GET", "DELETE", "POST", "PATCH");
     public $required_fields = array("file");
-    public $fields = array("file","user","spot");
+    public $fields = array("file","user","spot","field");
     public $table = "file";
     function getModel()
     {
         return new  File();
     }
     function post(){
+        // $fileContent = file_get_contents($_FILES['file']['tmp_name']);
+        // HttpResponse($fileContent);
         $user=null;
+        
         if(isset($_POST["user"])){
             $user=$_POST["user"];
             unset($_POST["user"]);
         }
-        $data=parent::post();
+    
+        $data=UploadHandler::uploader("file",array("png","jpeg","jpg"));
         if($user!=null){
-            Database::update("user",array("profile_pic"=>$data["id"]));
+            Database::update("user",array("id"=>getCurrentUser()["id"],$_POST["field"]=>$data));
+            return (new User())->get("id",getCurrentUser()["id"])[0];
         }
+
 
 
     }
@@ -304,7 +312,8 @@ class DocumentsApi extends API
             if (count($bd) == 0) {
                 HttpResponse(array("detail" => "not found"), 404);
             }
-            if ($bd["issued_by"] != getCurrentUser()["id"]) {
+            
+            if ($bd[0]["issued_by"] != getCurrentUser()["id"]) {
                 HttpResponse(array("detail" => "Not Allowed"), 403);
             }
         }
@@ -315,13 +324,68 @@ class LinksApi extends API
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array();
     public $table = "link";
-    public $fields = array();
+    public $path_field="url";
+    public $fields = array("name","documents","users");
+
+    private function gen_url($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
+    }
+    
     function getModel()
     {
         return new Link();
     }
+    function get(){
+        $path = get_path();
+
+        if (count($path) != 1) {
+            $bd = ($this->getModel()->get($this->path_field, $path[1]));
+            if (count($bd) == 0) {
+                HttpResponse(array("detail" => "not found"), 404);
+            }
+            HttpResponse($bd, 200);
+        }
+        if (count($_SERVER["argv"]) != 0) {
+            $params = explode("&", $_SERVER["argv"][0]);
+            $item = array();
+            foreach ($params as $par) {
+                $q = explode("=", $par);
+                if (count($q) < 2) {
+                    continue;
+                }
+                $item[$q[0]] = $q[1];
+            }
+            $this->validateColumn($item);
+            if (count($item) != 0) {
+                $bd = ($this->getModel()->get($item));
+                HttpResponse($bd);
+            }
+        }
+
+        HttpResponse(($this->getModel()->get("all")), 200);
+    }
     function post()
     {
+        $_POST["url"]= $this->gen_url();
+        $_POST["owner"]=getCurrentUser()["id"];
+        $docs=$_POST["documents"];
+        $usr=$_POST["users"];
+        unset($_POST["documents"]);
+        unset($_POST["users"]);
+        $data=parent::post();
+        foreach($docs as $did)
+        Database::insert("doc_link",array("link"=>$data["id"],"document"=>$did));
+        foreach($usr as $u)
+        Database::insert("link_permission",array("user"=>$u,"link"=>$data["id"]));
+
+        return $data;
     }
 }
 
@@ -365,6 +429,10 @@ class SpotTypeApi extends API
     function getModel()
     {
         return new SpotType();
+    }
+    function getPermission()
+    {
+        
     }
 }
 class CityApi extends API
@@ -431,5 +499,21 @@ class ImagesApi extends API
         }
 
         return array_merge($_POST, array("images" => $url));
+    }
+    function getPermission()
+    {
+        
+    }
+}
+class CurrentApi extends API{
+    public $allowed_methods = array( "GET");
+    public $table="user";
+    function getModel(){
+        return (new User());
+    }
+    function get(){
+
+        HttpResponse( (new User)->get("id",getCurrentUser()["id"])[0]);
+
     }
 }
