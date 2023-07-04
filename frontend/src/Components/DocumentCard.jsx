@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-function DocumentCard() {
+function DocumentCard(props) {
   const [randomImage, setRandomImage] = useState("");
 
   useEffect(() => {
-    fetchRandomImage();
+    // fetchRandomImage();
   }, []);
 
   const fetchRandomImage = async () => {
@@ -43,21 +43,19 @@ function DocumentCard() {
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-sm" />
           </div>
-          <h2 className="text-xl font-bold">Document Title</h2>
+          <h2 className="text-xl font-bold">{props.data.name}</h2>
         </div>
         <div className="mb-4">
           <p className="text-[#8A99AF]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit
-            amet, consectetur adipiscing elit.
+            {props.data.description}
           </p>
         </div>
         <div className="flex justify-end">
-          <button className="bg-[#2e57c7] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <a className="bg-[#2e57c7] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href={"http://localhost:8000"+props.data.url}>
             View Document
-          </button>
+          </a>
         </div>
-        <div className="">
+        {/* <div className="">
           <span className="font-bold ml-1 text-xs">From</span>
           <div className="flex space-x-4" >
             <img
@@ -69,7 +67,7 @@ function DocumentCard() {
               <span className="font-bold ml-1 text-xs">Admin</span>
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

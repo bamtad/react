@@ -17,21 +17,50 @@ import AdminNotification from "./Pages/admin/AdminNotification";
 import AdminSetting from "./Pages/admin/AdminSetting";
 import RegisterPage from "./Pages/registerPage";
 import { getAuth } from "firebase/auth";
+import { getInstance } from "./api/apihanlder";
+async function checkAuth(){
+  try{
 
+    let res=getInstance().get("/users");
+    if(res.status==401)
+     Navigate("/login");
+    } catch(error){
+    Navigate("/login");
+    
+  }
+
+return null;
+}
 function withAuthentication(Component) {
-  return function WrappedComponent() {
-    const auth = getAuth()
-    const currentUseruser = auth.currentUser
-    const [user, setUser] = useState(currentUseruser);
+  return  function WrappedComponent()  {
+     getInstance().get("/users").then((res)=>{
+      if(res.status==401)
+      return <Navigate to="/login"/>;
+      return <Component user={res.data}/>;
+    })
 
-      console.log(user)
+    // try{
+    //   let res;
+    //   res=getInstance().get("/users").then((value)=>value)
+    //   console.log(res)
+    //   if(res.status==401)
+    //   return <Navigate to="/login" />;
 
-    if (!user) {
-      // Redirect to login page if there is no authenticated user
-      return <Navigate to="/login" />;
-    }
+    //   return <Component user={res.data} />;
 
-    return <Component user={user} />;
+    // }catch(error){
+    //   console.log(error)
+    //   return <Navigate to="/login" />;
+
+    // }
+    
+
+    // if (!user) {
+    //   // Redirect to login page if there is no authenticated user
+    //   return <Navigate to="/login" />;
+    // }
+
+    // return <Component user={user} />;
   };
 }
 
@@ -43,17 +72,10 @@ function App() {
           <Route path="/" element={<Landingpage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          
-          {/* 
-          <Route
-            path="/dashboard"
-            Component={withAuthentication(Dashboard)}
-          /> */}
-
-
+        
           <Route
             path="/profile"
-            Component={withAuthentication(Profile)}
+            element={<Profile/>}
           />
           <Route
             path="/notification"
@@ -81,8 +103,8 @@ function App() {
             Component={withAuthentication(AdminSetting)}
           />
           <Route
-            path="/document"
-            Component={withAuthentication(Document)}
+            path="/document" auth={checkAuth}
+            element={<Document/>}
           
   
   />

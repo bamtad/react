@@ -56,6 +56,9 @@ switch (array_shift($path)) {
     case "comments":
         (new CommentApi())->view();
         break;
+    case "current":
+        (new CurrentApi())->view();
+        break;
     case "":
         not_found();
         break;

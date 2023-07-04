@@ -1,5 +1,7 @@
 <?php
 namespace Models;
+
+use API;
 use DB\Database;
 require(dirname(__DIR__) . "/db/database.php");
 class Models
@@ -205,3 +207,4 @@ class City extends Models
     public $table = "city";
     public $sql_f = "SELECT * FROM \"city\"";
 }
+

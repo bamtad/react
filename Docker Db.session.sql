@@ -36,4 +36,4 @@ CREATE TABLE
 SELECT
     *
 from
-    "test";
+    "user" order by id desc;

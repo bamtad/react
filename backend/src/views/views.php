@@ -165,7 +165,7 @@ class UsersApi extends API
 {
     public $allowed_methods = array("POST", "GET", "PATCH", "DELETE");
     public $required_fields = array("fname", "email", "password", "password2");
-    public $fields = array("fname", "email", "password", "password2", "profile_pic");
+    public $fields = array("fname", "email", "password", "password2", "profile_pic","bg_pic");
     public $table = "user";
 
     function getModel()
@@ -191,6 +191,7 @@ class UsersApi extends API
             $msg = array("detail" => "password fields must match");
             HttpResponse($msg, 400);
         }
+        
         parent::post();
     }
     function get()
@@ -220,7 +221,7 @@ class LoginApi extends API
             $_SESSION["logged_in"] = true;
             $_POST["last_login"] =  date("Y-m-d H:i:s", time());
             (new User())->update($usr["id"]);
-            return array("detail" => "Login Succesfull");
+            return $usr ;
         }
         HttpResponse(array("detail" => "Invalid Login Credentials"), 404);
     }
@@ -259,22 +260,28 @@ class FileApi extends API
 {
     public $allowed_methods = array("GET", "DELETE", "POST", "PATCH");
     public $required_fields = array("file");
-    public $fields = array("file","user","spot");
+    public $fields = array("file","user","spot","field");
     public $table = "file";
     function getModel()
     {
         return new  File();
     }
     function post(){
+        // $fileContent = file_get_contents($_FILES['file']['tmp_name']);
+        // HttpResponse($fileContent);
         $user=null;
+        
         if(isset($_POST["user"])){
             $user=$_POST["user"];
             unset($_POST["user"]);
         }
-        $data=parent::post();
+    
+        $data=UploadHandler::uploader("file",array("png","jpeg","jpg"));
         if($user!=null){
-            Database::update("user",array("profile_pic"=>$data["id"]));
+            Database::update("user",array("id"=>getCurrentUser()["id"],$_POST["field"]=>$data));
+            return (new User())->get("id",getCurrentUser()["id"])[0];
         }
+
 
 
     }
@@ -488,5 +495,17 @@ class ImagesApi extends API
         }
 
         return array_merge($_POST, array("images" => $url));
+    }
+}
+class CurrentApi extends API{
+    public $allowed_methods = array( "GET");
+    public $table="user";
+    function getModel(){
+        return (new User());
+    }
+    function get(){
+
+        HttpResponse( (new User)->get("id",getCurrentUser()["id"])[0]);
+
     }
 }

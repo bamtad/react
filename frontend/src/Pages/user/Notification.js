@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../Layout/DashboardLayout";
 import DocumentCard from "../../Components/DocumentCard";
-
-function Notification() {
+import { getInstance } from "../../api/apihanlder";
+import {useNavigate} from "react-router-dom";
+function Notification({auth=()=>{}}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [documentList,setDocumentList]=useState([]);
+  const navigate=useNavigate();
+
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -19,15 +23,24 @@ function Notification() {
     closeModal();
   };
 
+  
+  useEffect(() => {
+    getInstance()
+      .get("/users")
+      .then((response) => {
+      })
+      .catch((error) => {
+        if (error.response.status === 401)  navigate('/login');
+      });
+  }, []);
+
+
   return (
     <DashboardLayout>
       <div className="w-full min-h-screen bg-bodydark">
         <section className="h-full pt-10 flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
           <div className="space-y-10">
-            <DocumentCard />
-            <DocumentCard />
-            <DocumentCard />
-            <DocumentCard />
+            {documentList.map((item)=><DocumentCard data={item}/>)}
           </div>
         </section>
         <button
@@ -67,20 +80,15 @@ function Notification() {
                   </select>
                 </div> */}
 
+
+                
                 <div className="mb-4">
-                  <label className="block mb-2 font-medium">Document</label>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="document1" className="mr-2" />
-                    <label htmlFor="document1">Document 1</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="document2" className="mr-2" />
-                    <label htmlFor="document2">Document 2</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input type="checkbox" id="document3" className="mr-2" />
-                    <label htmlFor="document3">Document 3</label>
-                  </div>
+                  <label className="block mb-2 font-medium">Documents</label>
+                  {documentList.map((item)=><div className="flex items-center">
+                    <input type="checkbox" value={item.id} className="mr-2" />
+                    <label htmlFor="document1">{item.name}</label>
+                  </div>)}
+              
                 </div>
 
                 <div className="mb-4">

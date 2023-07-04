@@ -1,6 +1,14 @@
 <?php
-
 use Imagick\Imagick;
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Origin: http://localhost:3000');
+header('Access-Control-Allow-Methods: GET, POST,PATCH, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 function success_ok()
 {
@@ -10,11 +18,7 @@ function success_ok()
 }
 function HttpResponse($body, $status_code = 200)
 {
-    header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+    
     http_response_code($status_code);
     echo json_encode($body);
     exit;

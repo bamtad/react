@@ -11,14 +11,18 @@ import {
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { getAuth, signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { getInstance } from "../api/apihanlder";
 export default function DashboardLayout(props) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const handleLogout = async () => {
     console.log('hey')
     try {
-        const auth = getAuth();
-        await signOut(auth);
+      let res =await getInstance().get("/logout")
+        // const auth = getAuth();
+        // await signOut(auth);
+        console.log(res);
+
         navigate('/login');
     } catch (error) {
         // Handle any errors that occur during the logout process
