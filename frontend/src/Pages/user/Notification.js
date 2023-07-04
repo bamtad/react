@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 function Notification({auth=()=>{}}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [documentList,setDocumentList]=useState([]);
+  const [user,setUser]=useState({})
   const navigate=useNavigate();
 
 
@@ -26,12 +27,16 @@ function Notification({auth=()=>{}}) {
   
   useEffect(() => {
     getInstance()
-      .get("/users")
+      .get("/current")
       .then((response) => {
+        console.log(response);
+        setUser(response.data);
+        getInstance().get("/documents").then((res)=>{console.log(res);setDocumentList(res.data);})
       })
       .catch((error) => {
         if (error.response.status === 401)  navigate('/login');
       });
+
   }, []);
 
 

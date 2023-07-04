@@ -430,6 +430,10 @@ class SpotTypeApi extends API
     {
         return new SpotType();
     }
+    function getPermission()
+    {
+        
+    }
 }
 class CityApi extends API
 {
@@ -495,6 +499,10 @@ class ImagesApi extends API
         }
 
         return array_merge($_POST, array("images" => $url));
+    }
+    function getPermission()
+    {
+        
     }
 }
 class CurrentApi extends API{

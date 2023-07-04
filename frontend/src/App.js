@@ -79,7 +79,7 @@ function App() {
           />
           <Route
             path="/notification"
-            Component={withAuthentication(Notification)}
+            element={<Notification/>}
           />
           <Route
             path="/setting"
