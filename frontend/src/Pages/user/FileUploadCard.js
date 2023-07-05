@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-
+//the add document functio n file is in the notification
 function FileUploadCard() {
   const [selectedFile, setSelectedFile] = useState(null);
 

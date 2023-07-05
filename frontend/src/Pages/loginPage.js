@@ -45,7 +45,7 @@ function LoginPage() {
     if(!error){
       setLoading(true)
       try {
-        const userCredential = await api.post("/login",{email:email,password:password})
+        const userCredential = await api.post("http://localhost:8000/login",{email:email,password:password})
         // console.log('Login successful:', userCredential);
         setLoading(false); // Hide loading indicator
 
